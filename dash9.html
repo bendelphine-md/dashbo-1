@@ -573,6 +573,32 @@
     </style>
 </head>
 <body>
+
+    <script>
+(function() {
+    // Set your password here
+    const correctPassword = "ThisIsNotRealData";
+    
+    // Check if user is already authenticated in this session
+    if (sessionStorage.getItem("authenticated") !== "true") {
+        let userPassword = prompt("Please enter the password to access this page:");
+        
+        if (userPassword !== correctPassword) {
+            alert("Incorrect password. Access denied.");
+            // Redirect to another page or show blank page
+            document.body.innerHTML = "<h1>Access Denied</h1>";
+            throw new Error("Access denied");
+        } else {
+            // Store authentication in session
+            sessionStorage.setItem("authenticated", "true");
+        }
+    }
+})();
+</script>
+    
+    
+    
+    
     <div class="container">
         <div class="dropdown-container">
             <label for="projectSearch">Select Project</label>
