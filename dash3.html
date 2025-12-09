@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integrated Tax System Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border: 2px solid #333;
+            padding: 30px;
+        }
+
+        .project-selector {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .project-selector label {
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 15px;
+            color: #333;
+        }
+
+        .project-selector select {
+            padding: 10px 15px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            background-color: white;
+            cursor: pointer;
+            min-width: 300px;
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .left-info {
+            flex: 1;
+        }
+
+        .project-title {
+            font-size: 12px;
+            color: #999;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .project-name {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            margin-bottom: 15px;
+        }
+
+        .info-label {
+            font-size: 11px;
+            color: #999;
+            letter-spacing: 1.5px;
+            margin-bottom: 3px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .status-green {
+            color: #4CAF50;
+        }
+
+        .schedule-section {
+            flex: 2;
+            margin-left: 40px;
+        }
+
+        .schedule-label {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            font-size: 12px;
+            letter-spacing: 3px;
+            font-weight: bold;
+            float: left;
+            margin-right: 20px;
+        }
+
+        .timeline-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .timeline-line {
+            flex: 1;
+            height: 4px;
+            background: linear-gradient(to right, #5555ff 0%, #5555ff 70%, #4CAF50 70%, #4CAF50 100%);
+            position: relative;
+        }
+
+        .timeline-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #5555ff;
+            position: absolute;
+        }
+
+        .timeline-arrow {
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 12px solid #5555ff;
+            margin-left: 5px;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        .schedule-table th {
+            background-color: #f0f0f0;
+            padding: 8px;
+            border: 1px solid #ddd;
+            font-weight: normal;
+            font-size: 11px;
+        }
+
+        .schedule-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .phase-header {
+            background-color: #e8e8e8;
+            font-weight: bold;
+        }
+
+        .summary-row {
+            background-color: #f9f9f9;
+            margin-top: 20px;
+        }
+
+        .summary-item {
+            display: inline-block;
+            text-align: center;
+            padding: 15px 30px;
+        }
+
+        .summary-value {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .summary-label {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .cost-section {
+            margin-top: 30px;
+        }
+
+        .cost-label {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            font-size: 12px;
+            letter-spacing: 3px;
+            font-weight: bold;
+            float: left;
+            margin-right: 20px;
+        }
+
+        .cost-content {
+            overflow: hidden;
+        }
+
+        .cost-visual {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .cost-bar {
+            display: flex;
+            flex-direction: column;
+            margin-right: 30px;
+        }
+
+        .bar-segment {
+            padding: 15px 25px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+            color: white;
+        }
+
+        .bar-total {
+            background-color: #5555ff;
+        }
+
+        .bar-spent {
+            background-color: #ffcc66;
+        }
+
+        .bar-label {
+            font-size: 10px;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .cost-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        .cost-table th {
+            background-color: #fff9e6;
+            padding: 8px;
+            border: 1px solid #ddd;
+            font-weight: bold;
+        }
+
+        .cost-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: right;
+        }
+
+        .cost-table td:first-child {
+            text-align: left;
+            font-style: italic;
+        }
+
+        .oversight-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+
+        .oversight-title {
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .oversight-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        .oversight-table th {
+            background-color: #e8e8e8;
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .oversight-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: right;
+        }
+
+        .bottom-summary {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .bottom-summary-item {
+            text-align: center;
+        }
+
+        .bottom-summary-value {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .bottom-summary-label {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: #666;
+        }
+
+        .error {
+            text-align: center;
+            padding: 50px;
+            font-size: 16px;
+            color: #d32f2f;
+            background-color: #ffebee;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .debug-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .debug-toggle {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .debug-toggle button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="project-selector">
+            <label for="projectSelect">Select Project:</label>
+            <select id="projectSelect">
+                <option value="">-- Loading Projects --</option>
+            </select>
+        </div>
+
+        <div id="dashboardContent" class="loading">
+            Loading dashboard data...
+        </div>
+
+        <div class="debug-toggle">
+            <button id="debugButton">Toggle Debug Info</button>
+        </div>
+
+        <div id="debugInfo" class="debug-info" style="display: none;"></div>
+    </div>
+
+    <script>
+        var csvData = [];
+        var projects = [];
+        var debugMessages = [];
+
+        function logDebug(message, data) {
+            console.log(message, data);
+            debugMessages.push(message);
+            if (data) {
+                debugMessages.push(JSON.stringify(data, null, 2));
+            }
+            updateDebugDisplay();
+        }
+
+        function updateDebugDisplay() {
+            var debugDiv = document.getElementById('debugInfo');
+            if (debugDiv) {
+                debugDiv.textContent = debugMessages.join('\n');
+            }
+        }
+
+        function toggleDebug() {
+            var debugDiv = document.getElementById('debugInfo');
+            if (debugDiv.style.display === 'none') {
+                debugDiv.style.display = 'block';
+            } else {
+                debugDiv.style.display = 'none';
+            }
+        }
+
+        function parseCSV(text) {
+            logDebug('Parsing CSV text, length: ' + text.length);
+            
+            var lines = text.split('\n');
+            var result = [];
+            var headers = [];
+            
+            var headerLine = lines,[object Object],;
+            var inQuotes = false;
+            var currentField = '';
+            
+            for (var i = 0; i < headerLine.length; i++) {
+                var char = headerLine[i];
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    headers.push(currentField.trim());
+                    currentField = '';
+                } else {
+                    currentField += char;
+                }
+            }
+            headers.push(currentField.trim());
+            
+            logDebug('Headers found', headers);
+            
+            for (var lineIndex = 1; lineIndex < lines.length; lineIndex++) {
+                var line = lines[lineIndex].trim();
+                if (line === '') continue;
+                
+                var fields = [];
+                inQuotes = false;
+                currentField = '';
+                
+                for (var i = 0; i < line.length; i++) {
+                    var char = line[i];
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        fields.push(currentField.trim());
+                        currentField = '';
+                    } else {
+                        currentField += char;
+                    }
+                }
+                fields.push(currentField.trim());
+                
+                var row = {};
+                for (var j = 0; j < headers.length; j++) {
+                    row[headers[j]] = fields[j] || '';
+                }
+                result.push(row);
+            }
+            
+            logDebug('Parsed ' + result.length + ' rows');
+            return result;
+        }
+
+        function formatCurrency(value) {
+            if (!value || value === 'n/a' || value === 'TBD' || value === '') {
+                return value || 'n/a';
+            }
+            var str = value.toString().replace(/,/g, '');
+            var num = parseFloat(str);
+            if (isNaN(num)) {
+                return value;
+            }
+            return num.toLocaleString('en-US');
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr || dateStr === 'TBD' || dateStr === '') {
+                return dateStr || 'TBD';
+            }
+            return dateStr;
+        }
+
+        function getField(data) {
+            for (var i = 1; i < arguments.length; i++) {
+                var field = arguments[i];
+                if (data[field] !== undefined && data[field] !== null && data[field] !== '') {
+                    return data[field];
+                }
+            }
+            return '';
+        }
+
+        function loadCSVData() {
+            logDebug('Starting CSV load...');
+            
+            var csvUrl = 'https://raw.githubusercontent.com/bendelphine-md/dashbo-1/54b4590dc677945c2bd91b2510eaac6d1b58e8d4/dashboard-data.csv';
+            
+            logDebug('Fetching from: ' + csvUrl);
+            
+            fetch(csvUrl)
+                .then(function(response) {
+                    logDebug('Response status: ' + response.status);
+                    if (!response.ok) {
+                        throw new Error('HTTP error! status: ' + response.status);
+                    }
+                    return response.text();
+                })
+                .then(function(text) {
+                    logDebug('CSV text received, length: ' + text.length);
+                    
+                    csvData = parseCSV(text);
+                    
+                    if (csvData.length === 0) {
+                        throw new Error('No data parsed from CSV');
+                    }
+                    
+                    logDebug('First row sample', csvData,[object Object],);
+                    
+                    var firstRow = csvData,[object Object],;
+                    var projectField = null;
+                    var keys = Object.keys(firstRow);
+                    
+                    for (var i = 0; i < keys.length; i++) {
+                        var key = keys[i];
+                        var lowerKey = key.toLowerCase();
+                        if (lowerKey.indexOf('project') !== -1 && lowerKey.indexOf('name') !== -1) {
+                            projectField = key;
+                            break;
+                        }
+                    }
+                    
+                    if (!projectField) {
+                        projectField = keys,[object Object],;
+                    }
+                    
+                    logDebug('Using project field: ' + projectField);
+                    
+                    var seen = {};
+                    projects = [];
+                    for (var i = 0; i < csvData.length; i++) {
+                        var projectName = csvData[i][projectField];
+                        if (projectName && projectName.trim() !== '' && !seen[projectName]) {
+                            projects.push(projectName);
+                            seen[projectName] = true;
+                        }
+                    }
+                    
+                    logDebug('Projects found', projects);
+                    
+                    if (projects.length === 0) {
+                        throw new Error('No projects found in CSV');
+                    }
+                    
+                    var select = document.getElementById('projectSelect');
+                    select.innerHTML = '<option value="">-- Select a Project --</option>';
+                    for (var i = 0; i < projects.length; i++) {
+                        var option = document.createElement('option');
+                        option.value = projects[i];
+                        option.textContent = projects[i];
+                        select.appendChild(option);
+                    }
+                    
+                    if (projects.length > 0) {
+                        select.value = projects,[object Object],;
+                        loadProjectData();
+                    }
+                })
+                .catch(function(error) {
+                    logDebug('Error: ' + error.message);
+                    var errorHTML = '<div class="error">';
+                    errorHTML += '<strong>Error loading data:</strong><br>';
+                    errorHTML += error.message + '<br><br>';
+                    errorHTML += '<strong>Please check:</strong><br>';
+                    errorHTML += '1. Your internet connection<br>';
+                    errorHTML += '2. The CSV URL is accessible<br>';
+                    errorHTML += '3. CORS is not blocking the request<br>';
+                    errorHTML += '4. Click Toggle Debug Info below for details';
+                    errorHTML += '</div>';
+                    document.getElementById('dashboardContent').innerHTML = errorHTML;
+                });
+        }
+
+        function loadProjectData() {
+            var projectName = document.getElementById('projectSelect').value;
+            if (!projectName) {
+                return;
+            }
+
+            logDebug('Loading project: ' + projectName);
+
+            var firstRow = csvData,[object Object],;
+            var projectField = null;
+            var keys = Object.keys(firstRow);
+            
+            for (var i = 0; i < keys.length; i++) {
+                var key = keys[i];
+                var lowerKey = key.toLowerCase();
+                if (lowerKey.indexOf('project') !== -1 && lowerKey.indexOf('name') !== -1) {
+                    projectField = key;
+                    break;
+                }
+            }
+            
+            if (!projectField) {
+                projectField = keys,[object Object],;
+            }
+
+            var projectData = null;
+            for (var i = 0; i < csvData.length; i++) {
+                if (csvData[i][projectField] === projectName) {
+                    projectData = csvData[i];
+                    break;
+                }
+            }
+
+            if (!projectData) {
+                document.getElementById('dashboardContent').innerHTML = '<div class="error">Project data not found</div>';
+                return;
+            }
+
+            logDebug('Project data loaded', projectData);
+            renderDashboard(projectData);
+        }
+
+        function renderDashboard(data) {
+            var fields = Object.keys(data);
+            logDebug('Rendering with fields', fields);
+
+            var html = '';
+            
+            html += '<div class="header-section">';
+            html += '<div class="left-info">';
+            html += '<div class="project-title">' + (getField(data, 'Project_ID', 'project_id', 'ProjectID') || 'COMP-18-ITS') + '</div>';
+            html += '<div class="project-name">' + (getField(data, 'Project Name', 'project_name', 'ProjectName', 'Project') || 'Integrated Tax System') + '</div>';
+            
+            html += '<div class="info-item">';
+            html += '<div class="info-label">ACCOUNTABLE AGENCY:</div>';
+            html += '<div class="info-value">' + (getField(data, 'Accountable_Agency', 'accountable_agency', 'Agency', 'Accountable Agency') || 'N/A') + '</div>';
+            html += '</div>';
+            
+            html += '<div class="info-item">';
+            html += '<div class="info-label">PROJECT PHASE:</div>';
+            html += '<div class="info-value">' + (getField(data, 'Project_Phase', 'project_phase', 'Phase', 'Project Phase') || 'N/A') + '</div>';
+            html += '</div>';
+            
+            html += '<div class="info-item">';
+            html += '<div class="info-label">OVERSIGHT:</div>';
+            html += '<div class="info-value">' + (getField(data, 'Oversight', 'oversight') || 'N/A') + '</div>';
+            html += '</div>';
+            
+            html += '<div class="info-item">';
+            html += '<div class="info-label">OVERSIGHT STATUS:</div>';
+            html += '<div class="info-value status-green">' + (getField(data, 'Oversight_Status', 'oversight_status', 'Oversight Status', 'Status') || 'N/A') + '</div>';
+            html += '</div>';
+            
+            html += '<div class="info-item">';
+            html += '<div class="info-label">SUPPORT SERVICES:</div>';
+            html += '<div class="info-value">';
+            html += '<strong>Deployed Team:</strong> ' + (getField(data, 'Deployed_Team', 'deployed_team', 'Deployed Team') || 'N/A') + '<br>';
+            html += '<strong>Deep Dive Team:</strong> ' + (getField(data, 'Deep_Dive_Team', 'deep_dive_team', 'Deep Dive Team') || 'N/A') + '<br>';
+            html += '<strong>IV&amp;V:</strong> ' + (getField(data, 'IVV', 'ivv', 'IV&V') || 'N/A');
+            html += '</div>';
+            html += '</div>';
+            
+            html += '<div class="info-item">';
+            html += '<div class="info-label">STATUTORY REQUIREMENT:</div>';
+            html += '<div class="info-value">&#9745;</div>';
+            html += '</div>';
+            html += '</div>';
+            
+            html += '<div class="schedule-section">';
+            html += '<div class="schedule-label">SCHEDULE</div>';
+            html += '<div style="overflow: hidden;">';
+            html += '<div class="timeline-bar">';
+            html += '<div class="timeline-line">';
+            html += '<div class="timeline-dot" style="left: 0%;"></div>';
+            html += '<div class="timeline-dot" style="left: 30%;"></div>';
+            html += '<div class="timeline-dot" style="left: 100%;"></div>';
+            html += '</div>';
+            html += '<div class="timeline-arrow"></div>';
+            html += '<div class="timeline-dot" style="background-color: #4CAF50; position: relative; margin-left: 5px;"></div>';
+            html += '<div class="timeline-dot" style="background-color: #4CAF50; position: relative; margin-left: 5px;"></div>';
+            html += '</div>';
+            
+            html += '<table class="schedule-table">';
+            html += '<thead>';
+            html += '<tr>';
+            html += '<th></th>';
+            html += '<th colspan="2" class="phase-header">Procurement</th>';
+            html += '<th colspan="2" class="phase-header">Implementation</th>';
+            html += '<th colspan="2" class="phase-header">Operations &amp; Maintenance</th>';
+            html += '</tr>';
+            html += '<tr>';
+            html += '<th></th>';
+            html += '<th>Start</th>';
+            html += '<th>End</th>';
+            html += '<th>Start</th>';
+            html += '<th>End</th>';
+            html += '<th>Start</th>';
+            html += '<th>End</th>';
+            html += '</tr>';
+            html += '</thead>';
+            html += '<tbody>';
+            html += '<tr>';
+            html += '<td><em>Original Plan</em></td>';
+            html += '<td>' + formatDate(getField(data, 'Procurement_Start_Original', 'Proc Start Orig')) + '</td>';
+            html += '<td>' + formatDate(getField(data, 'Procurement_End_Original', 'Proc End Orig')) + '</td>';
+            html += '<td>' + formatDate(getField(data, 'Implementation_Start_Original', 'Impl Start Orig')) + '</td>';
+            html += '<td>' + formatDate(getField(data, 'Implementation_End_Original', 'Impl End Orig')) + '</td>';
+            html += '<td>' + formatDate(getField(data, 'Operations_Start_Original', 'Ops Start Orig')) + '</td>';
+            html += '<td>' + formatDate(getField(data, 'Operations_End_Original', 'Ops End Orig')) + '</td>';
+            html += '</tr>';
+            html += '<tr>';
+            html += '<td><em>Current Plan</em></td>';
+            html += '<td>' + formatDate(getField(data, 'Procurement_Start_Current', 'Proc Start Curr')) + '</td>';
+            html += '<td>' + formatDate(getField(data, 'Procurement_End_Current', 'Proc End Curr')) + '</td>';
+            html += '<td>' + formatDate(getField(data, 'Implementation_Start_Current', 'Impl Start Curr')) + '</td>';
+            html += '<td>' + formatDate(getField(data, 'Implementation_End_Current', 'Impl End Curr')) + '</td>';
+            html += '<td>' + formatDate(getField(data, 'Operations_Start_Current', 'Ops Start Curr')) + '</td>';
+            html += '<td>' + formatDate(getField(data, 'Operations_End_Current', 'Ops End Curr')) + '</td>';
+            html += '</tr>';
+            html += '<tr>';
+            html += '<td><strong>Actual</strong></td>';
+            html += '<td>' + formatDate(getField(data, 'Procurement_Start_Actual', 'Proc Start Act')) + '</td>';
+            html += '<td>' + formatDate(getField(data, 'Procurement_End_Actual', 'Proc End Act')) + '</td>';
+            html += '<td>' + formatDate(getField(data, 'Implementation_Start_Actual', 'Impl Start Act')) + '</td>';
+            html += '<td>' + formatDate(getField(data, 'Implementation_End_Actual', 'Impl End Act')) + '</td>';
+            html += '<td>' + formatDate(getField(data, 'Operations_Start_Actual', 'Ops Start Act')) + '</td>';
+            html += '<td>' + formatDate(getField(data, 'Operations_End_Actual', 'Ops End Act')) + '</td>';
+            html += '</tr>';
+            html += '</tbody>';
+            html += '</table>';
+            
+            html += '<div class="summary-row" style="margin-top: 20px; text-align: center;">';
+            html += '<div class="summary-item">';
+            html += '<div class="summary-value">' + (getField(data, 'Estimated_Project_Length', 'Est Project Length', 'Project Length') || 'N/A') + '</div>';
+            html += '<div class="summary-label">Estimated Project Length</div>';
+            html += '</div>';
+            html += '<div class="summary-item">';
+            html += '<div class="summary-value">' + (getField(data, 'Estimated_Time_Remaining', 'Est Time Remaining', 'Time Remaining') || 'N/A') + '</div>';
+            html += '<div class="summary-label">Estimated Time Remaining</div>';
+            html += '</div>';
+            html += '<div class="summary-item">';
+            html += '<div class="summary-value">' + (getField(data, 'Estimated_End_Year', 'Est End Year', 'End Year') || 'N/A') + '</div>';
+            html += '<div class="summary-label">Estimated End Year</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            
+            html += '<div class="cost-section">';
+            html += '<div class="cost-label">COST</div>';
+            html += '<div class="cost-content">';
+            html += '<div class="cost-visual">';
+            html += '<div class="cost-bar">';
+            html += '<div class="bar-segment bar-total">' + (getField(data, 'Total_Budget_Display', 'Budget Display', 'Total Budget') || 'N/A') + '</div>';
+            html += '<div class="bar-segment bar-spent">' + (getField(data, 'Spent_Display', 'Spent Display', 'Total Spent') || 'N/A') + '</div>';
+            html += '<div class="bar-label">EAC Burndown<br>(Estimate-at-Completion)</div>';
+            html += '</div>';
+            
+            html += '<table class="cost-table">';
+            html += '<thead>';
+            html += '<tr>';
+            html += '<th colspan="5">Project Costs</th>';
+            html += '</tr>';
+            html += '<tr>';
+            html += '<th></th>';
+            html += '<th>Prior FYs</th>';
+            html += '<th>FY25</th>';
+            html += '<th>FY26</th>';
+            html += '<th>Total</th>';
+            html += '</tr>';
+            html += '</thead>';
+            html += '<tbody>';
+            html += '<tr>';
+            html += '<td>Appropriation</td>';
+            html += '<td>' + formatCurrency(getField(data, 'Appropriation_Prior', 'Approp Prior')) + '</td>';
+            html += '<td>' + formatCurrency(getField(data, 'Appropriation_FY25', 'Approp FY25')) + '</td>';
+            html += '<td>' + formatCurrency(getField(data, 'Appropriation_FY26', 'Approp FY26')) + '</td>';
+            html += '<td>' + formatCurrency(getField(data, 'Appropriation_Total', 'Approp Total')) + '</td>';
+            html += '</tr>';
+            html += '<tr>';
+            html += '<td><em>Initial Spend Plan</em></td>';
+            html += '<td>' + formatCurrency(getField(data, 'Initial_Spend_Prior', 'Init Spend Prior')) + '</td>';
+            html += '<td>' + formatCurrency(getField(data, 'Initial_Spend_FY25', 'Init Spend FY25')) + '</td>';
+            html += '<td>' + formatCurrency(getField(data, 'Initial_Spend_FY26', 'Init Spend FY26')) + '</td>';
+            html += '<td>' + formatCurrency(getField(data, 'Initial_Spend_Total', 'Init Spend Total')) + '</td>';
+            html += '</tr>';
+            html += '<tr>';
+            html += '<td>Current Spend Plan</td>';
+            html += '<td>' + formatCurrency(getField(data, 'Current_Spend_Prior', 'Curr Spend Prior')) + '</td>';
+            html += '<td>' + formatCurrency(getField(data, 'Current_Spend_FY25', 'Curr Spend FY25')) + '</td>';
+            html += '<td>' + formatCurrency(getField(data, 'Current_Spend_FY26', 'Curr Spend FY26')) + '</td>';
+            html += '<td>' + formatCurrency(getField(data, 'Current_Spend_Total', 'Curr Spend Total')) + '</td>';
+            html += '</tr>';
+            html += '<tr>';
+            html += '<td><strong>Actual Spend to Date</strong></td>';
+            html += '<td><strong>' + formatCurrency(getField(data, 'Actual_Spend_Prior', 'Actual Prior')) + '</strong></td>';
+            html += '<td><strong>' + formatCurrency(getField(data, 'Actual_Spend_FY25', 'Actual FY25')) + '</strong></td>';
+            html += '<td><strong>' + formatCurrency(getField(data, 'Actual_Spend_FY26', 'Actual FY26')) + '</strong></td>';
+            html += '<td><strong>' + formatCurrency(getField(data, 'Actual_Spend_Total', 'Actual Total')) + '</strong></td>';
+            html += '</tr>';
+            html += '</tbody>';
+            html += '</table>';
+            html += '</div>';
+            
+            html += '<div class="oversight-section">';
+            html += '<div class="oversight-title">Oversight, IV&amp;V, &amp; Intervention Costs</div>';
+            html += '<table class="oversight-table">';
+            html += '<thead>';
+            html += '<tr>';
+            html += '<th></th>';
+            html += '<th>Prior FYs</th>';
+            html += '<th>FY25</th>';
+            html += '<th>FY26</th>';
+            html += '<th>Total</th>';
+            html += '</tr>';
+            html += '</thead>';
+            html += '<tbody>';
+            html += '<tr>';
+            html += '<td><strong>Actual Spend to Date</strong></td>';
+            html += '<td><strong>' + formatCurrency(getField(data, 'Oversight_Spend_Prior', 'Oversight Prior')) + '</strong></td>';
+            html += '<td><strong>' + formatCurrency(getField(data, 'Oversight_Spend_FY25', 'Oversight FY25')) + '</strong></td>';
+            html += '<td><strong>' + formatCurrency(getField(data, 'Oversight_Spend_FY26', 'Oversight FY26')) + '</strong></td>';
+            html += '<td><strong>' + formatCurrency(getField(data, 'Oversight_Spend_Total', 'Oversight Total')) + '</strong></td>';
+            html += '</tr>';
+            html += '</tbody>';
+            html += '</table>';
+            html += '</div>';
+            
+            html += '<div class="bottom-summary">';
+            html += '<div class="bottom-summary-item">';
+            html += '<div class="bottom-summary-value">' + (getField(data, 'EAC_Range', 'EAC Range', 'EAC') || 'N/A') + '</div>';
+            html += '<div class="bottom-summary-label">Project Estimate-at-Completion</div>';
+            html += '</div>';
+            html += '<div class="bottom-summary-item">';
+            html += '<div class="bottom-summary-value">' + (getField(data, 'Remaining_Costs', 'Remaining Costs', 'Remaining') || 'N/A') + '</div>';
+            html += '<div class="bottom-summary-label">Estimated Remaining Costs</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+
+            document.getElementById('dashboardContent').innerHTML = html;
+        }
+
+        document.getElementById('debugButton').addEventListener('click', toggleDebug);
+        document.getElementById('projectSelect').addEventListener('change', loadProjectData);
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadCSVData);
+        } else {
+            loadCSVData();
+        }
+    </script>
+</body>
+</html>
