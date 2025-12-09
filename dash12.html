@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MITDP Dashboard — Maryland Web Design System</title>
+
+  <!-- Use the compiled MDWDS CSS you pointed to (raw GitHub URL for the commit).
+       This will apply the official mdwds styles to inputs, buttons, cards, badges, etc.
+       If you host a compiled CSS elsewhere, replace this URL with that hosted file.
+    - If you build locally or publish the compiled CSS, update the link below to your compiled CSS.
+  -->
+  <link rel="stylesheet"
+        href="https://raw.githubusercontent.com/maryland-gov/mdwds-core/6f116a7f3e5e5a5208e359512eca3adfa3d0a2bf/src/assets/css/mdwds.min.css"
+        crossorigin="anonymous">
+
+  <!-- Keep a very small amount of page-specific overrides only where necessary -->
+  <style>
+    /* Ensure page base spacing and fallback fonts */
+    body {
+      margin: 0;
+      font-family: "Source Sans Pro", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #f8fafb;
+      -webkit-font-smoothing:antialiased;
+      padding: 1.25rem;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 1rem;
+    }
+    @media (max-width:1024px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+
+    /* small helpers (MDWDS provides cards, buttons, badges; these only tweak spacing) */
+    .md-card { background:#fff; border:1px solid #e6e7e8; border-radius:6px; box-shadow:0 1px 4px rgba(0,0,0,0.04); }
+    .md-card__body { padding:1rem; }
+    .muted { color:#666; font-size:.95rem; }
+
+    .autocomplete-wrapper { position:relative; max-width:720px; }
+    .autocomplete-items { position:absolute; z-index:1200; left:0; right:0; background:#fff; border:1px solid #e6e7e8; max-height:320px; overflow:auto; box-shadow:0 8px 20px rgba(0,0,0,0.08); border-radius:4px; display:none; }
+    .autocomplete-item { padding:.65rem .85rem; cursor:pointer; }
+    .autocomplete-item:hover, .autocomplete-item.active { background:rgba(33,92,163,0.06); }
+
+    .eac-display { display:flex; gap:1rem; margin-top:.75rem; }
+    .eac-box { padding:.8rem; border:1px solid #e6e7e8; border-radius:6px; background:#fff; flex:1; }
+    .eac-amount { font-size:1.5rem; font-weight:800; color:#215ca3; }
+
+    table.schedule-table { width:100%; border-collapse:collapse; margin-top:.75rem; }
+    table.schedule-table th, table.schedule-table td { padding:.5rem .6rem; border:1px solid #e6e7e8; text-align:left; font-size:.95rem; }
+
+    .badge-inline { display:inline-block; padding:.25rem .6rem; border-radius:999px; font-weight:700; color:#fff; background:#215ca3; font-size:.85rem; }
+
+    /* accessibility focus for items we create */
+    .autocomplete-item:focus { outline:3px solid rgba(33,92,163,0.14); outline-offset:-3px; }
+  </style>
+</head>
+<body>
+  <div class="page" id="page">
+    <!-- header -->
+    <header style="margin-bottom:1rem; display:flex; align-items:center; gap:1rem;">
+      <div style="width:52px; height:52px; background:#215ca3; border-radius:6px; display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:1.1rem;">MD</div>
+      <div>
+        <h1 style="margin:0 0 .15rem 0;">MITDP Dashboard</h1>
+        <div class="muted">Styled with the Maryland Web Design System</div>
+      </div>
+    </header>
+
+    <!-- Search / Autocomplete -->
+    <section style="margin-bottom:1rem;">
+      <label for="projectSearch" style="display:block; font-weight:700; margin-bottom:.5rem;">Select Project</label>
+      <div class="autocomplete-wrapper">
+        <!-- Use MDWDS/USWDS compatible class names so the design system will style these -->
+        <input id="projectSearch" class="usa-input" type="text" placeholder="Type to search projects or click to see all..." aria-autocomplete="list" aria-controls="autocompleteList" autocomplete="off" />
+        <button id="clearButton" class="usa-button usa-button--unstyled" aria-label="Clear search" title="Clear" style="position:absolute; right:3rem; top:50%; transform:translateY(-50%); display:none;">×</button>
+        <span aria-hidden="true" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); color:#666;">🔍</span>
+        <div id="autocompleteList" class="autocomplete-items" role="listbox"></div>
+      </div>
+    </section>
+
+    <div id="loadingMessage" class="md-card" style="padding:1.25rem; text-align:center;">Loading project data...</div>
+    <div id="errorMessage" style="display:none;"></div>
+
+    <section id="dashboardContent" style="display:none; margin-top:1rem;">
+      <div class="dashboard-grid">
+        <!-- LEFT SIDEBAR -->
+        <aside class="md-card" style="display:flex; flex-direction:column;">
+          <div class="md-card__body" style="border-bottom:1px solid #eee;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div id="projectIdSidebar" style="font-weight:700; color:#215ca3;"></div>
+                <h2 id="projectNameSidebar" style="margin-top:.25rem; font-size:1.05rem;"></h2>
+              </div>
+              <div id="statusBadgeWrap" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <div class="md-card__body" style="border-bottom:1px solid #eee;">
+            <div style="font-weight:700; font-size:.875rem;">Accountable agency</div>
+            <div id="agencySidebar" class="muted" style="margin-top:.35rem;"></div>
+          </div>
+
+          <div class="md-card__body" style="border-bottom:1px solid #eee;">
+            <div style="font-weight:700; font-size:.875rem;">Project phase</div>
+            <div id="phaseSidebar" class="muted" style="margin-top:.35rem;"></div>
+          </div>
+
+          <div class="md-card__body" style="border-bottom:1px solid #eee;">
+            <div style="font-weight:700; font-size:.875rem;">Oversight</div>
+            <div id="oversightActiveSidebar" class="muted" style="margin-top:.35rem;"></div>
+            <div style="margin-top:.5rem; font-weight:700;">Oversight status</div>
+            <div id="oversightStatusSidebar" class="muted" style="margin-top:.35rem;"></div>
+          </div>
+
+          <div class="md-card__body" style="border-bottom:1px solid #eee;">
+            <div style="font-weight:700; font-size:.875rem;">Support services</div>
+            <div style="margin-top:.5rem;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:.35rem;"><span>Deployed team</span><span id="deployedTeamSidebar" class="muted"></span></div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:.35rem;"><span>Deep dive team</span><span id="deepDiveTeamSidebar" class="muted"></span></div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:.35rem;"><span>IV&amp;V</span><span id="ivvSidebar" class="muted"></span></div>
+            </div>
+          </div>
+
+          <div class="md-card__body">
+            <div style="font-weight:700; font-size:.875rem;">Statutory requirement</div>
+            <div id="statutoryReqSidebar" class="muted" style="margin-top:.35rem;"></div>
+          </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="md-card" style="padding:1rem;">
+          <!-- SCHEDULE -->
+          <section aria-labelledby="scheduleHeading">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <h3 id="scheduleHeading" style="margin:0;">Schedule</h3>
+              <div style="display:flex; gap:.5rem;">
+                <button id="exportSchedule" class="usa-button usa-button--outline" title="Export schedule">Export</button>
+                <button id="printSchedule" class="usa-button usa-button--outline" title="Print schedule">Print</button>
+              </div>
+            </div>
+
+            <!-- Decorative timeline -->
+            <div style="margin-top:.65rem;">
+              <div style="height:10px; background:linear-gradient(90deg,#215ca3,#69a9e6); border-radius:6px;"></div>
+            </div>
+
+            <table class="schedule-table" aria-describedby="scheduleHeading" style="margin-top:.75rem;">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th colspan="2">Procurement</th>
+                  <th colspan="2">Implementation</th>
+                  <th colspan="2">Operations &amp; Maintenance</th>
+                </tr>
+                <tr>
+                  <th></th>
+                  <th>Start</th>
+                  <th>End</th>
+                  <th>Start</th>
+                  <th>End</th>
+                  <th>Start</th>
+                  <th>End</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="plan-label">Original Plan</td>
+                  <td id="procureStartOrig"></td>
+                  <td id="procureEndOrig"></td>
+                  <td id="implStartOrig"></td>
+                  <td id="implEndOrig"></td>
+                  <td id="omStartOrig"></td>
+                  <td id="omEndOrig"></td>
+                </tr>
+                <tr>
+                  <td class="plan-label">Current Plan</td>
+                  <td id="procureStartCurr"></td>
+                  <td id="procureEndCurr"></td>
+                  <td id="implStartCurr"></td>
+                  <td id="implEndCurr"></td>
+                  <td id="omStartCurr"></td>
+                  <td id="omEndCurr"></td>
+                </tr>
+                <tr>
+                  <td class="plan-label">Actual</td>
+                  <td id="procureStartAct"></td>
+                  <td id="procureEndAct"></td>
+                  <td id="implStartAct"></td>
+                  <td id="implEndAct"></td>
+                  <td id="omStartAct"></td>
+                  <td id="omEndAct"></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div style="display:flex; gap:1rem; margin-top:.85rem;">
+              <div style="flex:1;">
+                <div style="font-weight:800; font-size:1.05rem;" id="projectLength"></div>
+                <div class="muted">Estimated project length</div>
+              </div>
+              <div style="flex:1;">
+                <div style="font-weight:800; font-size:1.05rem;" id="timeRemaining"></div>
+                <div class="muted">Estimated time remaining</div>
+              </div>
+              <div style="flex:1;">
+                <div style="font-weight:800; font-size:1.05rem;" id="endYear"></div>
+                <div class="muted">Estimated end year</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- COSTS -->
+          <section style="margin-top:1rem;" aria-labelledby="costHeading">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <h3 id="costHeading" style="margin:0;">Cost</h3>
+              <div style="display:flex; gap:.5rem;">
+                <button id="downloadCosts" class="usa-button usa-button--outline" title="Download costs">Download</button>
+              </div>
+            </div>
+
+            <div class="eac-display" role="region" aria-label="EAC summary">
+              <div class="eac-box">
+                <div class="eac-amount" id="eacTotal"></div>
+                <div class="muted" style="margin-top:.25rem;">EAC Burndown (Estimate-at-Completion)</div>
+              </div>
+              <div class="eac-box">
+                <div class="eac-amount" id="eacRemaining"></div>
+                <div class="muted" style="margin-top:.25rem;">Estimated Remaining EAC</div>
+              </div>
+            </div>
+
+            <div style="margin-top:1rem;">
+              <h4 style="margin:0 0 .5rem 0;">Project Costs</h4>
+              <table class="schedule-table" aria-label="Project costs table">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Prior FYs</th>
+                    <th>FY25</th>
+                    <th>FY26</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="row-label">Appropriation</td>
+                    <td id="appropPrior"></td>
+                    <td id="appropFY25"></td>
+                    <td id="appropFY26"></td>
+                    <td id="appropTotal"></td>
+                  </tr>
+                  <tr>
+                    <td class="row-label">Initial Spend Plan</td>
+                    <td id="initialPrior"></td>
+                    <td id="initialFY25"></td>
+                    <td id="initialFY26"></td>
+                    <td id="initialTotal"></td>
+                  </tr>
+                  <tr>
+                    <td class="row-label">Current Spend Plan</td>
+                    <td id="currentPrior"></td>
+                    <td id="currentFY25"></td>
+                    <td id="currentFY26"></td>
+                    <td id="currentTotal"></td>
+                  </tr>
+                  <tr>
+                    <td class="row-label"><strong>Actual Spend to Date</strong></td>
+                    <td id="actualPrior"></td>
+                    <td id="actualFY25"></td>
+                    <td id="actualFY26"></td>
+                    <td id="actualTotal"></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div style="margin-top:1rem;">
+                <h4 style="margin:0 0 .5rem 0;">Oversight, IV&amp;V, &amp; Intervention Costs</h4>
+                <table class="schedule-table">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Prior FYs</th>
+                      <th>FY25</th>
+                      <th>FY26</th>
+                      <th>Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="row-label"><strong>Actual Spend to Date</strong></td>
+                      <td id="oiiPrior"></td>
+                      <td id="oiiFY25"></td>
+                      <td id="oiiFY26"></td>
+                      <td id="oiiTotal"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div style="display:flex; gap:1rem; margin-top:1rem;">
+                <div style="flex:1;">
+                  <div style="font-weight:800; font-size:1.05rem;" id="eacRange"></div>
+                  <div class="muted">Project Estimate-at-Completion</div>
+                </div>
+                <div style="flex:1;">
+                  <div style="font-weight:800; font-size:1.05rem;" id="remainingCosts"></div>
+                  <div class="muted">Estimated Remaining Costs</div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </section>
+  </div>
+
+  <!-- Optional: MDWDS scripts (if you distribute them). Not required for styles, but kept as non-critical. -->
+  <script src="https://raw.githubusercontent.com/maryland-gov/mdwds-core/6f116a7f3e5e5a5208e359512eca3adfa3d0a2bf/src/assets/js/mdwds.min.js" crossorigin="anonymous" onerror="this.remove()"></script>
+
+  <script>
+    // Autocomplete & render logic (keeps original IDs, now styled by MDWDS)
+    let projectsData = [];
+    let currentFocus = -1;
+
+    async function loadJSON() {
+      try {
+        const resp = await fetch('dashboard-data.json');
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        projectsData = await resp.json();
+        document.getElementById('loadingMessage').style.display = 'none';
+        initializeAutocomplete();
+        if (projectsData.length === 1) renderProjectDetails(projectsData[0]);
+      } catch (err) {
+        console.error(err);
+        document.getElementById('loadingMessage').style.display = 'none';
+        const errDiv = document.getElementById('errorMessage');
+        errDiv.style.display = 'block';
+        errDiv.className = 'md-card';
+        errDiv.innerHTML = '<div style="padding:1rem;"><strong>Error loading dashboard-data.json</strong><div style="margin-top:.5rem;">Make sure the file exists next to this HTML and you are serving the page via a webserver (not file://)</div><div style="margin-top:.5rem;color:#b00;">' + (err.message || '') + '</div></div>';
+      }
+    }
+
+    function initializeAutocomplete() {
+      const input = document.getElementById('projectSearch');
+      const clearButton = document.getElementById('clearButton');
+      const list = document.getElementById('autocompleteList');
+
+      input.addEventListener('focus', function() { if (!this.value) showAllProjects(); });
+      input.addEventListener('click', function() { if (!this.value) showAllProjects(); });
+
+      input.addEventListener('input', function() {
+        const val = this.value.trim();
+        closeAllLists();
+        if (!val) {
+          clearButton.style.display = 'none';
+          showAllProjects();
+          return;
+        }
+        clearButton.style.display = 'inline-block';
+        currentFocus = -1;
+        const matches = projectsData.filter(p => {
+          const text = `${p["MITDP ID"] || ''} ${p.Name || ''} ${p.Agency || ''}`.toLowerCase();
+          return text.includes(val.toLowerCase());
+        });
+        displayProjects(matches, val);
+      });
+
+      input.addEventListener('keydown', function(e) {
+        const items = list.getElementsByClassName('autocomplete-item');
+        if (e.key === 'ArrowDown') { currentFocus++; addActive(items); e.preventDefault(); }
+        else if (e.key === 'ArrowUp') { currentFocus--; addActive(items); e.preventDefault(); }
+        else if (e.key === 'Enter') { e.preventDefault(); if (currentFocus > -1 && items[currentFocus]) items[currentFocus].click(); }
+        else if (e.key === 'Escape') { closeAllLists(); }
+      });
+
+      clearButton.addEventListener('click', function() {
+        input.value = '';
+        clearButton.style.display = 'none';
+        document.getElementById('dashboardContent').style.display = 'none';
+        showAllProjects();
+        input.focus();
+      });
+
+      document.addEventListener('click', function(e) {
+        if (e.target !== input && e.target !== list) closeAllLists();
+      });
+    }
+
+    function showAllProjects() {
+      displayProjects(projectsData, '');
+    }
+
+    function displayProjects(projects, searchValue) {
+      const container = document.getElementById('autocompleteList');
+      container.innerHTML = '';
+      container.style.display = 'none';
+      currentFocus = -1;
+
+      if (!projects || projects.length === 0) {
+        container.innerHTML = '<div class="no-results">No projects found</div>';
+        container.style.display = 'block';
+        return;
+      }
+
+      const frag = document.createDocumentFragment();
+      projects.forEach(project => {
+        const id = project["MITDP ID"] || '';
+        const name = project.Name || '';
+        const agency = project.Agency || '';
+
+        const div = document.createElement('div');
+        div.className = 'autocomplete-item';
+        div.role = 'option';
+        div.tabIndex = 0;
+
+        div.innerHTML = '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+                        '<div><strong style="color:#215ca3;">' + escapeHTML(id) + '</strong> ' + escapeHTML(name) +
+                        '<div style="color:#666; font-size:.85rem;">' + escapeHTML(agency) + '</div></div>' +
+                        '</div>';
+
+        div.addEventListener('click', function() {
+          const input = document.getElementById('projectSearch');
+          input.value = `${id} - ${name}`;
+          closeAllLists();
+          renderProjectDetails(project);
+        });
+
+        div.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.click(); }
+        });
+
+        frag.appendChild(div);
+      });
+
+      container.appendChild(frag);
+      container.style.display = 'block';
+    }
+
+    function addActive(items) {
+      if (!items) return;
+      removeActive(items);
+      if (currentFocus >= items.length) currentFocus = items.length - 1;
+      if (currentFocus < 0) currentFocus = 0;
+      items[currentFocus].classList.add('active');
+      items[currentFocus].focus();
+    }
+
+    function removeActive(items) {
+      for (const it of items) it.classList.remove('active');
+    }
+
+    function closeAllLists() {
+      const container = document.getElementById('autocompleteList');
+      if (container) container.style.display = 'none';
+      currentFocus = -1;
+    }
+
+    function renderProjectDetails(project) {
+      if (!project) return;
+      document.getElementById('dashboardContent').style.display = 'block';
+
+      const setText = (id, value) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = (value === undefined || value === null) ? '' : value;
+      };
+
+      setText('projectIdSidebar', project["MITDP ID"] || '');
+      setText('projectNameSidebar', project.Name || '');
+      setText('agencySidebar', project.Agency || '');
+      setText('phaseSidebar', project.Phase || project['Project Phase'] || '');
+      setText('oversightActiveSidebar', project.OversightActive ? 'Yes' : (project.OversightActive === false ? 'No' : (project.Oversight || '')));
+      setText('oversightStatusSidebar', project.OversightStatus || '');
+      setText('deployedTeamSidebar', project.DeployedTeam || project['Deployed Team'] || '');
+      setText('deepDiveTeamSidebar', project.DeepDiveTeam || project['Deep Dive Team'] || '');
+      setText('ivvSidebar', project.IVV || project.IVandV || '');
+      setText('statutoryReqSidebar', project.StatutoryRequirement || project['Statutory Requirement'] || '');
+
+      const dateFor = v => { if (!v) return ''; const d = new Date(v); return isNaN(d) ? v : d.toLocaleDateString(); };
+
+      setText('procureStartOrig', dateFor(project.ProcurementStartOriginal || project.procureStartOrig));
+      setText('procureEndOrig', dateFor(project.ProcurementEndOriginal || project.procureEndOrig));
+      setText('implStartOrig', dateFor(project.ImplementationStartOriginal || project.implStartOrig));
+      setText('implEndOrig', dateFor(project.ImplementationEndOriginal || project.implEndOrig));
+      setText('omStartOrig', dateFor(project.OMStartOriginal || project.omStartOrig));
+      setText('omEndOrig', dateFor(project.OMEndOriginal || project.omEndOrig));
+
+      setText('procureStartCurr', dateFor(project.ProcurementStartCurrent || project.procureStartCurr));
+      setText('procureEndCurr', dateFor(project.ProcurementEndCurrent || project.procureEndCurr));
+      setText('implStartCurr', dateFor(project.ImplementationStartCurrent || project.implStartCurr));
+      setText('implEndCurr', dateFor(project.ImplementationEndCurrent || project.implEndCurr));
+      setText('omStartCurr', dateFor(project.OMStartCurrent || project.omStartCurr));
+      setText('omEndCurr', dateFor(project.OMEndCurrent || project.omEndCurr));
+
+      setText('procureStartAct', dateFor(project.ProcurementStartActual || project.procureStartAct));
+      setText('procureEndAct', dateFor(project.ProcurementEndActual || project.procureEndAct));
+      setText('implStartAct', dateFor(project.ImplementationStartActual || project.implStartAct));
+      setText('implEndAct', dateFor(project.ImplementationEndActual || project.implEndAct));
+      setText('omStartAct', dateFor(project.OMStartActual || project.omStartAct));
+      setText('omEndAct', dateFor(project.OMEndActual || project.omEndAct));
+
+      setText('projectLength', project.ProjectLength || project.length || '');
+      setText('timeRemaining', project.TimeRemaining || '');
+      setText('endYear', project.EndYear || '');
+
+      const money = v => {
+        if (v === null || v === undefined || v === '') return '';
+        const n = Number(String(v).replace(/[^0-9.-]+/g,''));
+        if (isNaN(n)) return String(v);
+        return n.toLocaleString(undefined, { style:'currency', currency:'USD', maximumFractionDigits:0 });
+      };
+
+      setText('eacTotal', money(project.EACTotal || project.EAC || project.eacTotal));
+      setText('eacRemaining', money(project.EACRemaining || project.eacRemaining));
+
+      setText('appropPrior', money(project.AppropPrior));
+      setText('appropFY25', money(project.AppropFY25));
+      setText('appropFY26', money(project.AppropFY26));
+      setText('appropTotal', money(project.AppropTotal));
+
+      setText('initialPrior', money(project.InitialPrior));
+      setText('initialFY25', money(project.InitialFY25));
+      setText('initialFY26', money(project.InitialFY26));
+      setText('initialTotal', money(project.InitialTotal));
+
+      setText('currentPrior', money(project.CurrentPrior));
+      setText('currentFY25', money(project.CurrentFY25));
+      setText('currentFY26', money(project.CurrentFY26));
+      setText('currentTotal', money(project.CurrentTotal));
+
+      setText('actualPrior', money(project.ActualPrior));
+      setText('actualFY25', money(project.ActualFY25));
+      setText('actualFY26', money(project.ActualFY26));
+      setText('actualTotal', money(project.ActualTotal));
+
+      setText('oiiPrior', money(project.OIIPrior));
+      setText('oiiFY25', money(project.OIIFY25));
+      setText('oiiFY26', money(project.OIIFY26));
+      setText('oiiTotal', money(project.OIITotal));
+
+      setText('eacRange', money(project.EACRange || project.EAC || project.eacRange));
+      setText('remainingCosts', money(project.RemainingCosts || project.remainingCosts));
+
+      // Render a rich status badge using MDWDS look-and-feel (fallback inline colors)
+      const badgeWrap = document.getElementById('statusBadgeWrap');
+      badgeWrap.innerHTML = '';
+      const status = (project.OverallStatus || project.Status || '').toLowerCase();
+      if (status) {
+        const span = document.createElement('span');
+        span.className = 'badge-inline';
+        span.textContent = (project.OverallStatus || project.Status || '');
+        if (status.includes('green') || status.includes('on track') || status.includes('complete')) span.style.background = '#10a37f';
+        else if (status.includes('yellow') || status.includes('at risk')) span.style.background = '#f0ad4e';
+        else if (status.includes('red') || status.includes('critical')) span.style.background = '#d9534f';
+        badgeWrap.appendChild(span);
+      }
+    }
+
+    function escapeHTML(str) {
+      if (str === null || str === undefined) return '';
+      return String(str).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]); });
+    }
+
+    document.addEventListener('DOMContentLoaded', loadJSON);
+  </script>
+</body>
+</html>
