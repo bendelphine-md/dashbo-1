@@ -1,4 +1,4 @@
-projectsData = [
+[
   {
     "MITDP ID": "COMP-16-ITS",
     "Name": "Integrated Tax System",
@@ -3059,4 +3059,4 @@ projectsData = [
     "FY25 OII Total Spend": "$71,602",
     "FY26 OII Total Spend": "$82,800.00"
   }
-];
+]
