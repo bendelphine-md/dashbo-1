@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Dashboard - Live Data</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <style>
+        :root {
+            --primary-text: #333;
+            --secondary-text: #666;
+            --highlight-blue: #2b5d9b;
+            --highlight-yellow: #f4c01f;
+            --bg-gray: #f4f4f4;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #fff;
+            color: var(--primary-text);
+        }
+
+        /* --- Header & Selector --- */
+        .header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .selector-group {
+            display: flex;
+            align-items: center;
+        }
+
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        select {
+            padding: 8px 12px;
+            font-size: 1em;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            min-width: 300px;
+        }
+
+        #loadingIndicator {
+            color: var(--secondary-text);
+            font-style: italic;
+            display: none;
+        }
+
+        /* --- Main Layout --- */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px; /* Left Sidebar, Main Summary, Right Metrics */
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            opacity: 0; /* Hidden until loaded */
+            transition: opacity 0.5s ease;
+        }
+
+        .dashboard-container.loaded {
+            opacity: 1;
+        }
+
+        /* --- Column 1: Project Identity --- */
+        .project-identity h1 {
+            color: var(--highlight-blue);
+            font-size: 1.8em;
+            margin: 0 0 5px 0;
+        }
+
+        .project-identity h2 {
+            font-size: 1.2em;
+            margin: 0 0 20px 0;
+            color: var(--primary-text);
+            font-weight: 600;
+        }
+
+        .identity-box {
+            margin-bottom: 20px;
+        }
+
+        .identity-label {
+            font-size: 0.85em;
+            text-transform: uppercase;
+            color: var(--secondary-text);
+            font-weight: bold;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .identity-value {
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        /* --- Column 2: Summary & Timeline --- */
+        .project-summary-section {
+            border-left: 1px solid #eee;
+            border-right: 1px solid #eee;
+            padding: 0 30px;
+        }
+
+        .section-header {
+            font-size: 0.85em;
+            text-transform: uppercase;
+            color: var(--secondary-text);
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .summary-text {
+            line-height: 1.6;
+            font-size: 0.95em;
+            margin-bottom: 30px;
+            white-space: pre-line; /* Preserves newlines from CSV */
+        }
+
+        /* Timeline Visualization */
+        .timeline-container {
+            margin-top: 40px;
+        }
+        
+        .timeline-years {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8em;
+            color: var(--secondary-text);
+            margin-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .timeline-bars {
+            position: relative;
+            height: 30px;
+            background: #f0f0f0;
+            border-radius: 15px;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .bar-segment {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.7em;
+            font-weight: bold;
+        }
+
+        .seg-procurement { background-color: #a0c4ff; width: 15%; }
+        .seg-implementation { background-color: var(--highlight-blue); width: 60%; }
+        .seg-ops { background-color: #9bf6ff; color: #333; width: 25%; }
+
+        /* --- Column 3: Metrics & Charts --- */
+        .metrics-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .metric-card {
+            background: var(--bg-gray);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--primary-text);
+        }
+
+        .metric-label {
+            font-size: 0.9em;
+            color: var(--secondary-text);
+            margin-top: 5px;
+        }
+
+        .chart-container {
+            margin-top: 20px;
+            height: 250px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="selector-group">
+            <label for="projectSelector">Select project:</label>
+            <select id="projectSelector">
+                <option value="" disabled selected>Loading data...</option>
+            </select>
+        </div>
+        <div id="loadingIndicator">Fetching data from Google Sheets...</div>
+    </div>
+
+    <div class="dashboard-container" id="dashboard">
+        <div class="project-identity">
+            <h1 id="projectId"></h1> 
+            <h2 id="projectName"></h2> 
+
+            <div class="identity-box">
+                <span class="identity-label">Accountable Agency</span>
+                <span class="identity-value" id="agency"></span>
+            </div>
+
+            <div class="identity-box">
+                <span class="identity-label">Project Phase</span>
+                <span class="identity-value" id="phase"></span>
+            </div>
+            
+            <div style="margin-top: 40px;">
+                <div class="identity-box">
+                     <div class="metric-value" id="estLength"></div>
+                     <span class="identity-label">Estimated Project Length</span>
+                </div>
+                <div class="identity-box">
+                     <div class="metric-value" id="timeRemaining"></div>
+                     <span class="identity-label">Estimated Time Remaining</span>
+                </div>
+                <div class="identity-box">
+                     <div class="metric-value" id="endYear"></div>
+                     <span class="identity-label">Estimated End Year</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-summary-section">
+            <div class="section-header">Project Summary</div>
+            <div class="summary-text" id="summary"></div>
+
+            <div class="timeline-container">
+                <div class="section-header">Current Schedule</div>
+                <div class="timeline-years">
+                    <span>2016</span>
+                    <span>2018</span>
+                    <span>2020</span>
+                    <span>2022</span>
+                    <span>2024</span>
+                    <span>2026</span>
+                    <span>2028</span>
+                    <span>2030</span>
+                </div>
+                <div class="timeline-bars">
+                    <div class="bar-segment seg-procurement" title="Procurement">Procure</div>
+                    <div class="bar-segment seg-implementation" title="Implementation">Implementation</div>
+                    <div class="bar-segment seg-ops" title="Ops & Maint">O&M</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="metrics-column">
+            <div class="metric-card">
+                <div class="metric-value" id="costEstimate"></div>
+                <div class="metric-label">Project Estimate-at-Completion</div>
+            </div>
+
+            <div>
+                <div class="section-header">Amount Spent</div>
+                <div class="chart-container">
+                    <canvas id="spendChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRZm_p9q_Y8pnXmdCQP8kc4giaYgkkLfp5MggOVoUiB7fbqySmuJTAewSb86lbGgXpkn4CwssEeLAHT/pub?gid=2143029205&single=true&output=csv';
+
+        let projectsData = [];
+        let chartInstance = null;
+
+        // --- Fetch & Parse Data ---
+        function loadData() {
+            const loading = document.getElementById('loadingIndicator');
+            const selector = document.getElementById('projectSelector');
+            
+            loading.style.display = 'block';
+            
+            Papa.parse(SHEET_CSV_URL, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    loading.style.display = 'none';
+                    if (results.data && results.data.length > 0) {
+                        // Normalize data keys to handle slight header variations
+                        projectsData = results.data.map(normalizeData);
+                        
+                        populateSelector();
+                        
+                        // Select first project by default
+                        if (projectsData.length > 0) {
+                            renderDashboard(projectsData[0]);
+                            document.getElementById('dashboard').classList.add('loaded');
+                        }
+                    } else {
+                        alert("No data found in the spreadsheet.");
+                    }
+                },
+                error: function(err) {
+                    loading.textContent = "Error loading data.";
+                    console.error("CSV Parse Error:", err);
+                    alert("Failed to load data. Check console for details.");
+                }
+            });
+        }
+
+        // --- Helper: Map CSV headers to our internal keys ---
+        // This makes the code robust even if headers are slightly different (e.g. "Project Name" vs "project_name")
+        function normalizeData(row) {
+            // Helper to search for a key case-insensitively
+            const getVal = (possibleKeys) => {
+                const rowKeys = Object.keys(row);
+                for (let pk of possibleKeys) {
+                    const match = rowKeys.find(k => k.toLowerCase().trim() === pk.toLowerCase());
+                    if (match) return row[match];
+                }
+                return "";
+            };
+
+            return {
+                id: getVal(["Project ID", "ID", "Code"]),
+                name: getVal(["Project Name", "Name", "Title"]),
+                agency: getVal(["Accountable Agency", "Agency", "Department"]),
+                phase: getVal(["Project Phase", "Phase", "Status"]),
+                summary: getVal(["Project Summary", "Summary", "Description"]),
+                est_length: getVal(["Estimated Project Length", "Length", "Duration"]),
+                time_remaining: getVal(["Estimated Time Remaining", "Time Remaining"]),
+                end_year: getVal(["Estimated End Year", "End Year", "Completion Year"]),
+                cost_estimate: getVal(["Project Estimate-at-Completion", "Cost Estimate", "Total Cost"]),
+                
+                // Numbers for the chart
+                forecasted_spend: parseNumber(getVal(["Forecasted Spend", "Forecast Spend"])),
+                actual_spend: parseNumber(getVal(["Actual Spend", "Spent"])),
+                future_forecast: parseNumber(getVal(["Future Forecast", "Forecasted Spend Future", "Future Spend"]))
+            };
+        }
+
+        function parseNumber(val) {
+            if (!val) return 0;
+            // Remove '$', 'M', ',' and convert to float
+            const clean = val.toString().replace(/[^0-9.]/g, ''); 
+            return parseFloat(clean) || 0;
+        }
