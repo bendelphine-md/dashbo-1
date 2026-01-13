@@ -3,210 +3,230 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Portfolio Dashboard</title>
+    <title>Maryland Project Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --primary-blue: #2c5282;
-            --highlight-yellow: #f6ad55;
-            --bg-gray: #f7fafc;
+            --md-blue: #1c4e80; /* Deep Blue from PDF */
+            --md-gold: #fbba00; /* Yellow from PDF Forecast */
+            --md-light-blue: #4a90e2; /* Implementation Blue */
+            --md-grey: #a0aec0; /* Procurement Grey */
+            --md-orange: #ed8936; /* O&M Orange */
+            --bg-color: #f8f9fa;
             --text-dark: #2d3748;
-            --text-light: #718096;
-            --procurement-color: #a0aec0;
-            --implementation-color: #4299e1;
-            --om-color: #ed8936;
+            --text-muted: #718096;
         }
 
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: var(--bg-gray);
+            background-color: var(--bg-color);
             color: var(--text-dark);
         }
 
-        /* Top Bar & Selector */
+        /* --- Header / Selector --- */
         .top-bar {
             background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
+            padding: 15px 20px;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 30px;
             display: flex;
             align-items: center;
             gap: 15px;
         }
-
         select {
-            padding: 10px;
+            padding: 8px 12px;
             font-size: 16px;
             border: 1px solid #cbd5e0;
             border-radius: 4px;
-            flex-grow: 1;
-            max-width: 600px;
+            min-width: 300px;
         }
 
-        /* Dashboard Grid */
-        .dashboard-container {
+        /* --- Main Grid Layout --- */
+        .dashboard-grid {
             display: grid;
-            grid-template-columns: 250px 1fr;
-            grid-template-rows: auto auto auto;
-            gap: 20px;
-            max-width: 1200px;
+            grid-template-columns: 300px 1fr; /* Left Sidebar vs Main Content */
+            gap: 40px;
+            max-width: 1400px;
             margin: 0 auto;
-        }
-
-        /* Card Styling */
-        .card {
             background: white;
-            padding: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        /* EAC Section (Left Top) */
-        .eac-card {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-            border-left: 5px solid var(--primary-blue);
+        /* --- Left Sidebar (Identity) --- */
+        .sidebar {
+            border-right: 1px solid #e2e8f0;
+            padding-right: 30px;
         }
 
-        .eac-value {
+        .project-id {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .project-title {
             font-size: 28px;
-            font-weight: bold;
+            font-weight: 800;
+            color: var(--md-blue);
+            line-height: 1.2;
+            margin-top: 0;
+            margin-bottom: 40px;
+        }
+
+        .sidebar-group {
+            margin-bottom: 30px;
+        }
+
+        .sidebar-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-value {
+            font-size: 18px;
+            font-weight: 500;
             color: var(--text-dark);
         }
 
-        .label {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-light);
-            margin-top: 5px;
+        /* --- Main Content Area --- */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
         }
 
-        /* Chart Section (Right Top) */
-        .chart-card {
-            height: 250px;
-            position: relative;
+        /* Top Row: EAC and Chart */
+        .stats-row {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+            align-items: center;
         }
-        
-        .chart-container {
-            position: relative;
-            height: 100%;
+
+        .eac-box {
+            text-align: left;
+        }
+        .eac-number {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+        .eac-label {
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .chart-wrapper {
+            height: 200px;
             width: 100%;
         }
 
-        /* Details Section (Full Width Middle) */
-        .details-grid {
-            grid-column: 1 / -1;
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 20px;
-        }
-
-        .meta-data h3 {
-            margin: 0 0 5px 0;
+        /* Middle Row: Summary */
+        .summary-box h3 {
             font-size: 14px;
-            color: var(--text-light);
             text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 10px;
         }
-
-        .meta-data p {
-            margin: 0 0 15px 0;
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .project-summary {
-            font-size: 14px;
+        .summary-text {
+            font-size: 15px;
             line-height: 1.6;
             color: #4a5568;
         }
 
-        /* Timeline Section (Bottom) */
-        .timeline-card {
-            grid-column: 1 / -1;
+        /* Bottom Row: Timeline */
+        .timeline-section h3 {
+            font-size: 14px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 15px;
         }
 
-        .timeline-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 10px;
-        }
-
-        .timeline-metric {
-            text-align: center;
-        }
-
-        .timeline-metric .value {
-            display: block;
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--primary-blue);
-        }
-
-        /* Timeline Visualization */
-        .gantt-container {
+        .gantt-wrapper {
             position: relative;
-            margin-top: 30px;
-            padding-bottom: 20px;
+            margin-bottom: 20px;
         }
 
-        .timeline-years {
+        .years-axis {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
             font-size: 12px;
-            color: var(--text-light);
+            color: var(--text-muted);
+            margin-bottom: 5px;
             border-bottom: 1px solid #e2e8f0;
             padding-bottom: 5px;
         }
 
-        .timeline-track {
+        .track {
             position: relative;
-            height: 40px;
-            background: #edf2f7;
-            border-radius: 20px;
+            height: 30px;
+            background: #f1f5f9;
+            border-radius: 15px;
             overflow: hidden;
         }
 
-        .phase-bar {
+        .bar {
             position: absolute;
-            height: 100%;
-            top: 0;
-            color: white;
-            font-size: 10px;
+            top: 0; 
+            bottom: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            transition: width 0.5s ease, left 0.5s ease;
+            font-size: 10px;
+            color: white;
+            font-weight: bold;
         }
 
-        .legend {
+        /* Timeline Footer Metrics */
+        .timeline-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+        }
+
+        .metric-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .metric-val {
+            display: block;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--md-blue);
+        }
+        .metric-lbl {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* Chart Custom Legend */
+        .chart-legend {
             display: flex;
             gap: 15px;
-            margin-top: 15px;
+            justify-content: flex-end;
             font-size: 12px;
+            margin-top: 5px;
         }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
+        .legend-item span {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            margin-right: 5px;
         }
 
     </style>
@@ -215,86 +235,93 @@
 
     <div class="top-bar">
         <label for="projectSelect"><strong>Select Project:</strong></label>
-        <select id="projectSelect" onchange="loadProject(this.value)">
+        <select id="projectSelect" onchange="renderProject(this.value)">
             </select>
     </div>
 
-    <div class="dashboard-container">
+    <div class="dashboard-grid">
         
-        <div class="card eac-card">
-            <div class="eac-value" id="eacDisplay">$0M - $0M</div>
-            <div class="label">Project Estimate-at-Completion</div>
-        </div>
+        <div class="sidebar">
+            <div class="project-id" id="mitdpId">COMP-16-ITS</div>
+            <h1 class="project-title" id="projName">Integrated Tax System</h1>
 
-        <div class="card chart-card">
-            <h3 style="margin: 0 0 10px 0; font-size: 16px;">Amount Spent (FY25)</h3>
-            <div class="chart-container">
-                <canvas id="spendChart"></canvas>
+            <div class="sidebar-group">
+                <div class="sidebar-label">Accountable Agency</div>
+                <div class="sidebar-value" id="agency">Comptroller of Maryland</div>
+            </div>
+
+            <div class="sidebar-group">
+                <div class="sidebar-label">Project Phase</div>
+                <div class="sidebar-value" id="phase">Implementation</div>
             </div>
         </div>
 
-        <div class="card details-grid">
-            <div class="meta-data">
-                <h3>Accountable Agency</h3>
-                <p id="agencyDisplay">-</p>
-                
-                <h3>Project Phase</h3>
-                <p id="phaseDisplay">-</p>
+        <div class="main-content">
+            
+            <div class="stats-row">
+                <div class="eac-box">
+                    <div class="eac-number" id="eacVal">$75M - $80M</div>
+                    <div class="eac-label">Project<br>Estimate-at-<br>Completion</div>
+                </div>
 
-                <h3>MITDP ID</h3>
-                <p id="idDisplay" style="font-size: 14px; font-weight: normal;">-</p>
-            </div>
-            <div>
-                <h3>Project Summary</h3>
-                <div class="project-summary" id="summaryDisplay">
-                    Select a project to view details.
-                </div>
-            </div>
-        </div>
-
-        <div class="card timeline-card">
-            <div class="timeline-header">
-                <div class="timeline-metric">
-                    <span class="value" id="lengthDisplay">-</span>
-                    <span class="label">Est. Length</span>
-                </div>
-                <div class="timeline-metric">
-                    <span class="value" id="remainingDisplay">-</span>
-                    <span class="label">Time Remaining</span>
-                </div>
-                <div class="timeline-metric">
-                    <span class="value" id="endYearDisplay">-</span>
-                    <span class="label">Est. End Year</span>
-                </div>
-            </div>
-
-            <div class="gantt-container">
-                <div class="timeline-years">
-                    <span>2016</span><span>2018</span><span>2020</span><span>2022</span><span>2024</span><span>2026</span><span>2028</span><span>2030</span>
-                </div>
-                
-                <div class="timeline-track" id="timelineTrack">
+                <div>
+                    <h3 style="margin:0 0 10px 0; font-size:14px; text-transform:uppercase; color:var(--text-dark);">Amount Spent (FY25)</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="spendChart"></canvas>
                     </div>
-
-                <div class="legend">
-                    <div class="legend-item"><div class="dot" style="background:var(--procurement-color)"></div> Procurement</div>
-                    <div class="legend-item"><div class="dot" style="background:var(--implementation-color)"></div> Implementation</div>
-                    <div class="legend-item"><div class="dot" style="background:var(--om-color)"></div> Operations & Maint.</div>
+                    <div class="chart-legend">
+                        <div class="legend-item"><span style="background:var(--md-gold)"></span>Forecasted Spend</div>
+                        <div class="legend-item"><span style="background:var(--md-blue)"></span>Actual Spend</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
+            <div class="summary-box">
+                <h3>Project Summary</h3>
+                <div class="summary-text" id="summary">
+                    Loading...
+                </div>
+            </div>
+
+            <div class="timeline-section">
+                <h3>Current Schedule</h3>
+                <div class="gantt-wrapper">
+                    <div class="years-axis">
+                        <span>2016</span><span>2018</span><span>2020</span><span>2022</span><span>2024</span><span>2026</span><span>2028</span><span>2030</span>
+                    </div>
+                    <div class="track" id="timelineTrack">
+                        </div>
+                </div>
+
+                <div class="timeline-footer">
+                    <div class="metric-item">
+                        <span class="metric-val" id="lenVal">12-14 years</span>
+                        <span class="metric-lbl">Estimated Project Length</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-val" id="remainVal">1 - 2 years</span>
+                        <span class="metric-lbl">Estimated Time Remaining</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-val" id="endYearVal">2028</span>
+                        <span class="metric-lbl">Estimated End Year</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
 <script>
-    // --- Data Source ---
-    const projectsData = [
+    // --- Data (Provided JSON) ---
+    const data = [
     {
         "MITDP ID": "DBM-23-CBIS",
         "Name": "Capital Budgeting Information System (CBIS) replacement",
         "Agency": "Department of Budget and Management",
         "Phase": "O&M",
         "Project Length": "3 - 5 years",
+        "Start Year": 2022,
         "End Year": 2027,
         "Project Time Remaining": "0 to 1 years",
         "Procurement Start": "7/1/2022", "Procurement End": "5/1/2024",
@@ -311,6 +338,7 @@
         "Agency": "Comptroller of Maryland",
         "Phase": "Implementation",
         "Project Length": "5 - 7 years",
+        "Start Year": 2021,
         "End Year": 2028,
         "Project Time Remaining": "0 to 2 years",
         "Procurement Start": "7/1/2021", "Procurement End": "8/30/2024",
@@ -319,7 +347,7 @@
         "EAC": "$40M - $50M",
         "FY25 Forecasted Spend": 17780793.58,
         "FY25 Actual Spend": 16593911,
-        "Project Summary": "A statewide project by the Central Payroll Bureau to replace the legacy mainframe payroll system with a modern, cloud-based Software as a Service (SaaS) solution. This transformation is designed to streamline and automate outdated payroll processes while introducing standardized industry best practices."
+        "Project Summary": "A statewide project by the Central Payroll Bureau to replace the legacy mainframe payroll system with a modern, cloud-based Software as a Service (SaaS) solution. This transformation is designed to streamline and automate outdated payroll processes while introducing standardized industry best practices to strengthen efficiency, accuracy, and compliance."
     },
     {
         "MITDP ID": "MDH-23-OPER",
@@ -327,6 +355,7 @@
         "Agency": "Maryland Department of Health",
         "Phase": "Implementation",
         "Project Length": "4 - 6 years",
+        "Start Year": 2022,
         "End Year": 2028,
         "Project Time Remaining": "0 to 2 years",
         "Procurement Start": "10/3/2022", "Procurement End": "9/30/2025",
@@ -335,7 +364,7 @@
         "EAC": "$0M - $10M",
         "FY25 Forecasted Spend": 4204.68,
         "FY25 Actual Spend": 4205,
-        "Project Summary": "A Maryland Department of Health (MDH) initiative to modernize licensing, compliance, and workforce regulatory functions led by the Office of Controlled Substances Administration. The project aims to enhance healthcare delivery and streamline regulatory oversight by replacing outdated manual processes."
+        "Project Summary": "A Maryland Department of Health (MDH) initiative to modernize licensing, compliance, and workforce regulatory functions led by the Office of Controlled Substances Administration. The project aims to enhance healthcare delivery and streamline regulatory oversight by replacing outdated manual processes with a unified, cloud-based system accessible to the public."
     },
     {
         "MITDP ID": "MDH-25-MMT_DASO",
@@ -343,6 +372,7 @@
         "Agency": "Maryland Department of Health",
         "Phase": "O&M",
         "Project Length": "8 - 10 years",
+        "Start Year": 2018,
         "End Year": 2028,
         "Project Time Remaining": "0 to 2 years",
         "Procurement Start": "7/1/2018", "Procurement End": "2/3/2025",
@@ -359,6 +389,7 @@
         "Agency": "Department of Labor",
         "Phase": "Implementation",
         "Project Length": "5 - 7 years",
+        "Start Year": 2021,
         "End Year": 2028,
         "Project Time Remaining": "0 to 2 years",
         "Procurement Start": "7/1/2021", "Procurement End": "12/14/2024",
@@ -375,6 +406,7 @@
         "Agency": "Maryland Higher Education Commission",
         "Phase": "Implementation",
         "Project Length": "4 - 6 years",
+        "Start Year": 2022,
         "End Year": 2028,
         "Project Time Remaining": "0 to 2 years",
         "Procurement Start": "7/1/2022", "Procurement End": "3/18/2025",
@@ -383,7 +415,24 @@
         "EAC": "$10M - $20M",
         "FY25 Forecasted Spend": 743327.58,
         "FY25 Actual Spend": 731972,
-        "Project Summary": "A statewide initiative by the Maryland Higher Education Commission (MHEC) to transform student access to financial aid across 29 State programs. The project implements a new web-based application that consolidates access to all scholarships, offering features like multilingual support and mobile accessibility."
+        "Project Summary": "A statewide initiative by the Maryland Higher Education Commission (MHEC) to transform student access to financial aid across 29 State programs. The project implements a new web-based application that consolidates access to all scholarships, offering features like multilingual support, mobile accessibility, and electronic signatures."
+    },
+    {
+        "MITDP ID": "SBE-24-NCRIS",
+        "Name": "Campaign Reporting Information System (CRIS)",
+        "Agency": "Maryland State Board of Elections",
+        "Phase": "O&M",
+        "Project Length": "3 - 5 years",
+        "Start Year": 2023,
+        "End Year": 2028,
+        "Project Time Remaining": "0 to 2 years",
+        "Procurement Start": "7/4/2023", "Procurement End": "1/29/2025",
+        "Implementation Start": "1/30/2025", "Implementation End": "11/30/2025",
+        "O&M Start": "12/1/2025", "O&M End": "12/31/2026",
+        "EAC": "$0M - $10M",
+        "FY25 Forecasted Spend": 924021.94,
+        "FY25 Actual Spend": 1033093,
+        "Project Summary": "The Maryland State Board of Elections (SBE) is procuring a new Campaign Reporting Information System (NCRIS) prior to the 2026 election cycle to fully manage the State’s campaign finance system."
     },
     {
         "MITDP ID": "STO-18-FSM",
@@ -391,6 +440,7 @@
         "Agency": "State Treasurer's Office",
         "Phase": "Implementation",
         "Project Length": "9 - 11 years",
+        "Start Year": 2017,
         "End Year": 2028,
         "Project Time Remaining": "0 to 2 years",
         "Procurement Start": "7/1/2017", "Procurement End": "9/1/2018",
@@ -407,6 +457,7 @@
         "Agency": "Department of General Services",
         "Phase": "Implementation",
         "Project Length": "10 - 12 years",
+        "Start Year": 2017,
         "End Year": 2029,
         "Project Time Remaining": "1 to 3 years",
         "Procurement Start": "7/1/2017", "Procurement End": "2/1/2019",
@@ -415,7 +466,24 @@
         "EAC": "$70M - $80M",
         "FY25 Forecasted Spend": 3239585.29,
         "FY25 Actual Spend": 2771967,
-        "Project Summary": "This project is modernizing the State of Maryland’s enterprise procurement platform to standardize how State agencies manage solicitations, contracts, and vendor interactions. Following an internal assessment and an Executive Order, the eMMA platform is enhancing its capabilities."
+        "Project Summary": "This project is modernizing the State of Maryland’s enterprise procurement platform to standardize how State agencies manage solicitations, contracts, and vendor interactions. Following an internal assessment and an Executive Order, the eMMA platform is enhancing its capabilities with strategic sourcing, catalog management, advanced reporting, and improved compliance for small and minority-owned businesses."
+    },
+    {
+        "MITDP ID": "DBM-25-FLEET",
+        "Name": "Fleet Management System Replacement",
+        "Agency": "Department of Budget and Management",
+        "Phase": "Implementation",
+        "Project Length": "6 - 8 years",
+        "Start Year": 2021,
+        "End Year": 2029,
+        "Project Time Remaining": "1 to 3 years",
+        "Procurement Start": "1/7/2021", "Procurement End": "6/30/2025",
+        "Implementation Start": "7/1/2025", "Implementation End": "3/31/2026",
+        "O&M Start": "4/1/2026", "O&M End": "6/29/2027",
+        "EAC": "$0M - $10M",
+        "FY25 Forecasted Spend": 200000.00,
+        "FY25 Actual Spend": 0,
+        "Project Summary": "A statewide initiative by the Department of Budget and Management (DBM) to replace the legacy WebFleetMaster system with a fully functional and customizable software solution. The new system will modernize fleet operations by tracking vehicles, repairs, usage, drivers, and telematics data."
     },
     {
         "MITDP ID": "DNR-21-ONESTOP",
@@ -423,15 +491,50 @@
         "Agency": "Department of Natural Resources",
         "Phase": "Implementation",
         "Project Length": "8 - 10 years",
+        "Start Year": 2019,
         "End Year": 2029,
         "Project Time Remaining": "1 to 3 years",
         "Procurement Start": "10/1/2019", "Procurement End": "10/1/2023",
         "Implementation Start": "10/1/2023", "Implementation End": "3/1/2026",
         "O&M Start": "3/1/2026", "O&M End": "6/1/2027",
         "EAC": "$20M - $30M",
-        "FY25 Forecasted Spend": 1388000,
+        "FY25 Forecasted Spend": 1388000.00,
         "FY25 Actual Spend": 166800,
         "Project Summary": "A statewide initiative by the Department of Natural Resources (DNR) to replace the COMPASS system with a modern, web-based Commercial Off-the-Shelf (COTS) platform for comprehensive licensing and permitting services."
+    },
+    {
+        "MITDP ID": "MDE-25-PORTAL",
+        "Name": "MDE Portal Project",
+        "Agency": "Department of the Environment",
+        "Phase": "Implementation",
+        "Project Length": "3 - 5 years",
+        "Start Year": 2024,
+        "End Year": 2029,
+        "Project Time Remaining": "1 to 3 years",
+        "Procurement Start": "7/1/2024", "Procurement End": "3/14/2025",
+        "Implementation Start": "3/17/2025", "Implementation End": "3/1/2027",
+        "O&M Start": "3/2/2027", "O&M End": "5/31/2028",
+        "EAC": "$0M - $10M",
+        "FY25 Forecasted Spend": 287957.32,
+        "FY25 Actual Spend": 275078,
+        "Project Summary": "A modernization initiative by the Maryland Department of the Environment (MDE) to create a centralized online portal and payment system for managing permitting and licensing applications, replacing primarily paper-based processes."
+    },
+    {
+        "MITDP ID": "MDE-25-WELLS",
+        "Name": "Wells and Septic Portal",
+        "Agency": "Department of the Environment",
+        "Phase": "Implementation",
+        "Project Length": "3 - 5 years",
+        "Start Year": 2024,
+        "End Year": 2029,
+        "Project Time Remaining": "1 to 3 years",
+        "Procurement Start": "7/1/2024", "Procurement End": "8/31/2025",
+        "Implementation Start": "9/1/2025", "Implementation End": "8/31/2027",
+        "O&M Start": "9/1/2027", "O&M End": "11/30/2028",
+        "EAC": "$0M - $10M",
+        "FY25 Forecasted Spend": 200000.00,
+        "FY25 Actual Spend": 0,
+        "Project Summary": "An MDE modernization initiative to streamline the management of on-site sewage disposal systems and well installation permits. It will deliver a comprehensive online platform enabling applicants to submit and pay for permit requests and providing automated application management tools."
     },
     {
         "MITDP ID": "MDH-16-EHR",
@@ -439,6 +542,7 @@
         "Agency": "Maryland Department of Health",
         "Phase": "Implementation",
         "Project Length": "6 - 8 years",
+        "Start Year": 2021,
         "End Year": 2029,
         "Project Time Remaining": "1 to 3 years",
         "Procurement Start": "8/6/2021", "Procurement End": "10/1/2023",
@@ -448,39 +552,102 @@
         "FY25 Forecasted Spend": 6276198.99,
         "FY25 Actual Spend": 5852884,
         "Project Summary": "A Maryland Department of Health (MDH) initiative to replace the legacy Health Management Information System with a commercially available, cloud-based Software as a Service (SaaS) solution."
+    },
+    {
+        "MITDP ID": "MDH-19-BON",
+        "Name": "Enterprise Licensing and Regulatory Management Solution (LRMS)",
+        "Agency": "Maryland Department of Health",
+        "Phase": "Implementation",
+        "Project Length": "4 - 6 years",
+        "Start Year": 2023,
+        "End Year": 2029,
+        "Project Time Remaining": "1 to 3 years",
+        "Procurement Start": "7/3/2023", "Procurement End": "8/29/2025",
+        "Implementation Start": "8/30/2025", "Implementation End": "9/30/2026",
+        "O&M Start": "10/1/2026", "O&M End": "12/30/2027",
+        "EAC": "$10M - $20M",
+        "FY25 Forecasted Spend": 193832.32,
+        "FY25 Actual Spend": 226672,
+        "Project Summary": "An MDH initiative to enhance the ability of the Maryland Board of Nursing (MBON) to manage health profession services and regulatory functions. It establishes a modern, scalable enterprise platform that will first support the MBON and then be extended to the State’s twenty-two other health profession boards."
     }
-];
+    ];
 
-    // --- Chart Setup ---
-    let spendChart;
-    
+    let chartInstance = null;
+
+    // --- Init ---
+    window.onload = function() {
+        populateSelector();
+        initChart();
+        // Load first project by default
+        renderProject(0);
+    };
+
+    function populateSelector() {
+        const select = document.getElementById('projectSelect');
+        data.forEach((p, index) => {
+            const opt = document.createElement('option');
+            opt.value = index;
+            opt.text = `[${p["MITDP ID"]}] ${p.Name}`;
+            select.appendChild(opt);
+        });
+    }
+
     function initChart() {
         const ctx = document.getElementById('spendChart').getContext('2d');
-        spendChart = new Chart(ctx, {
+        chartInstance = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: ['Forecasted Spend', 'Actual Spend'],
                 datasets: [{
-                    label: 'USD ($)',
                     data: [0, 0],
-                    backgroundColor: ['#f6ad55', '#2c5282'],
-                    borderRadius: 4,
-                    barPercentage: 0.6
+                    backgroundColor: [
+                        '#fbba00', // Yellow for Forecast
+                        '#1c4e80'  // Blue for Actual
+                    ],
+                    borderWidth: 0,
+                    barPercentage: 0.6,
+                    categoryPercentage: 0.8
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { display: false }
+                    legend: { display: false }, // Custom legend used in HTML
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
+                        grid: {
+                            display: true,
+                            drawBorder: false,
+                            color: '#e2e8f0'
+                        },
                         ticks: {
+                            maxTicksLimit: 5,
                             callback: function(value) {
-                                return '$' + (value / 1000000).toFixed(1) + 'M';
+                                if(value >= 1000000) return '$' + (value/1000000).toFixed(1) + 'M';
+                                return value;
                             }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
                         }
                     }
                 }
@@ -488,98 +655,101 @@
         });
     }
 
-    // --- Logic ---
-    
-    const dropdown = document.getElementById('projectSelect');
+    function renderProject(index) {
+        const p = data[index];
 
-    function populateDropdown() {
-        projectsData.forEach((p, index) => {
-            const option = document.createElement('option');
-            option.value = index;
-            option.text = `[${p["MITDP ID"]}] ${p.Name}`;
-            dropdown.appendChild(option);
-        });
+        // 1. Sidebar / Identity
+        document.getElementById('mitdpId').innerText = p["MITDP ID"];
+        document.getElementById('projName').innerText = p.Name;
+        document.getElementById('agency').innerText = p.Agency;
+        document.getElementById('phase').innerText = p.Phase;
+
+        // 2. Stats
+        document.getElementById('eacVal').innerText = p.EAC;
+        document.getElementById('summary').innerText = p["Project Summary"];
+
+        // 3. Chart Update
+        chartInstance.data.datasets[0].data = [
+            p["FY25 Forecasted Spend"], 
+            p["FY25 Actual Spend"]
+        ];
+        chartInstance.update();
+
+        // 4. Timeline Metrics
+        document.getElementById('lenVal').innerText = p["Project Length"];
+        document.getElementById('remainVal').innerText = p["Project Time Remaining"];
+        document.getElementById('endYearVal').innerText = p["End Year"];
+
+        // 5. Draw Timeline
+        drawGantt(p);
     }
 
-    function parseDate(dateStr) {
-        if(!dateStr) return null;
-        return new Date(dateStr);
-    }
-
-    function loadProject(index) {
-        const project = projectsData[index];
-
-        // 1. Update Text Fields
-        document.getElementById('eacDisplay').innerText = project.EAC;
-        document.getElementById('agencyDisplay').innerText = project.Agency;
-        document.getElementById('phaseDisplay').innerText = project.Phase;
-        document.getElementById('idDisplay').innerText = project["MITDP ID"];
-        document.getElementById('summaryDisplay').innerText = project["Project Summary"];
-        
-        // 2. Update Timeline Metrics
-        document.getElementById('lengthDisplay').innerText = project["Project Length"];
-        document.getElementById('remainingDisplay').innerText = project["Project Time Remaining"];
-        document.getElementById('endYearDisplay').innerText = project["End Year"];
-
-        // 3. Update Chart (FY25 data)
-        const forecast = parseFloat(project["FY25 Forecasted Spend"]);
-        const actual = parseFloat(project["FY25 Actual Spend"]);
-        
-        spendChart.data.datasets[0].data = [forecast, actual];
-        spendChart.update();
-
-        // 4. Update Timeline Visualization
-        drawTimeline(project);
-    }
-
-    function drawTimeline(project) {
+    function drawGantt(p) {
         const track = document.getElementById('timelineTrack');
-        track.innerHTML = ''; // Clear previous
+        track.innerHTML = ''; // clear
 
-        // Timeline range: 2016 to 2030
+        // Timeline Range: 2016 - 2030 (based on PDF axis)
         const minYear = 2016;
         const maxYear = 2030;
         const totalSpan = maxYear - minYear;
 
-        // Helper to calculate % position
-        const getPos = (dateStr) => {
-            const d = parseDate(dateStr);
-            if(!d) return 0;
-            const year = d.getFullYear() + (d.getMonth() / 12);
-            return ((year - minYear) / totalSpan) * 100;
-        };
-
         const phases = [
-            { start: project["Procurement Start"], end: project["Procurement End"], color: 'var(--procurement-color)', label: 'Proc' },
-            { start: project["Implementation Start"], end: project["Implementation End"], color: 'var(--implementation-color)', label: 'Imp' },
-            { start: project["O&M Start"], end: project["O&M End"], color: 'var(--om-color)', label: 'O&M' }
+            { 
+                start: p["Procurement Start"], 
+                end: p["Procurement End"], 
+                color: '#a0aec0', 
+                label: 'Procurement' 
+            },
+            { 
+                start: p["Implementation Start"], 
+                end: p["Implementation End"], 
+                color: '#4a90e2', 
+                label: 'Implementation' 
+            },
+            { 
+                start: p["O&M Start"], 
+                end: p["O&M End"], 
+                color: '#ed8936', 
+                label: 'O&M' 
+            }
         ];
 
-        phases.forEach(phase => {
-            const startPct = getPos(phase.start);
-            const endPct = getPos(phase.end);
-            const widthPct = endPct - startPct;
+        phases.forEach(ph => {
+            if(!ph.start || !ph.end) return;
 
-            if (widthPct > 0) {
+            const sDate = new Date(ph.start);
+            const eDate = new Date(ph.end);
+            
+            // Decimal year format (e.g. 2022.5 for June)
+            const sDec = sDate.getFullYear() + (sDate.getMonth() / 12);
+            const eDec = eDate.getFullYear() + (eDate.getMonth() / 12);
+
+            // Calculate % positions
+            let leftPct = ((sDec - minYear) / totalSpan) * 100;
+            let widthPct = ((eDec - sDec) / totalSpan) * 100;
+
+            // Bounds check visual
+            if(leftPct < 0) { 
+                widthPct += leftPct; 
+                leftPct = 0; 
+            }
+
+            if(widthPct > 0) {
                 const bar = document.createElement('div');
-                bar.className = 'phase-bar';
-                bar.style.left = startPct + '%';
+                bar.className = 'bar';
+                bar.style.left = leftPct + '%';
                 bar.style.width = widthPct + '%';
-                bar.style.backgroundColor = phase.color;
-                // Add tooltip title
-                bar.title = `${phase.label}: ${phase.start} - ${phase.end}`;
+                bar.style.backgroundColor = ph.color;
+                bar.title = `${ph.label}: ${ph.start} - ${ph.end}`;
+                bar.innerText = ph.label; // Optional: Text inside bar
+                // Hide text if bar too small
+                if(widthPct < 15) bar.innerText = '';
+                
                 track.appendChild(bar);
             }
         });
     }
-
-    // --- Initialization ---
-    window.onload = function() {
-        initChart();
-        populateDropdown();
-        loadProject(1); // Load default project (e.g., index 1 to match data variety)
-    };
-
 </script>
+
 </body>
 </html>
