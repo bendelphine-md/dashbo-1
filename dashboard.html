@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Maryland Project Dashboard - Raw Data Integration</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+  rel="stylesheet"
+  href="https://cdn.maryland.gov/mdwds/latest/css/mdwds.min.css"
+/>
     <style>
         :root {
             --bg-color: #ffffff;
@@ -22,30 +26,28 @@
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 40px;
             background-color: #fff;
             color: var(--text-dark);
         }
 
-        /* --- Selector (Top Right Floating) --- */
+        /* --- Selector --- */
         .selector-container {
-            position: absolute;
-            top: 20px;
-            right: 40px;
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            padding: 5px 10px;
+            background: #dadadac7;
+            padding: 10px 10px;
+            margin-bottom: 40px;
             border-radius: 4px;
             z-index: 100;
+
         }
         select {
-            border: none;
             font-size: 14px;
             outline: none;
             cursor: pointer;
             min-width: 200px;
+            padding: 10px;
+            /* font-weight: bold; */
         }
 
         /* --- Header Section --- */
