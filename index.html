@@ -250,7 +250,7 @@ b;
  }
 
 
-        .chart-wrapper-inner { flex-grow: 1; display: flex; flex-direction: column; width: 100%; background: white; padding: 40px 40px 20px 20px; }
+        .chart-wrapper-inner { flex-grow: 1; display: flex; flex-direction: column; width: 100%; background: white; padding: 40px 20px 20px 20px; }
 
         .chart-container {
             display: flex; align-items: flex-end; justify-content: center; height: 180px; gap: 20px;
@@ -261,7 +261,8 @@ b;
         .chart-grid-line { position: absolute; left: 0; right: 0; border-top: 1px dotted #ccc; z-index: 0; }
         .grid-label { position: absolute; left: 0; top: -10px; font-size: 0.7rem; color: #666; background: rgba(255,255,255,0.8); padding-right: 4px; }
 
-        .fy-group { display: flex; align-items: flex-end; gap: 4px; position: relative; z-index: 1; height: 100%; }
+        .fy-group { display: flex; align-items: flex-end; gap: 8px; position: relative; z-index: 1; height: 100%;  }
+        .fy-previous { margin-right: 32px; }
         .fy-label { position: absolute; bottom: -30px; left: 0; right: 0; text-align: center; font-weight: 700; font-size: 0.8rem; color: #111; }
 
         .bar {
@@ -274,13 +275,13 @@ b;
             font-size: 0.75rem; font-weight: 700; color: #111;
             z-index: 2;
         }
-        .bar-actual .bar-value-label { color: #ccc; }
+        .bar-actual .bar-value-label { color: #cccccc; }
 
         .bar-forecast { background-color: var(--chart-yellow); }
         .bar-actual { background-color: var(--primary-blue); }
 
         .chart-legend {
-            margin-top: 15px; display: flex; flex-direction: column; align-items: flex-end; gap: 5px; font-size: 0.8rem; color: #333;
+            margin-top: 15px; display: flex; flex-direction: column; align-items: flex-end; gap: 5px; font-size: 0.8rem; color: #333; padding-left: 16px;
         }
         .legend-row { display: flex; align-items: center; gap: 8px; }
         .legend-square { width: 12px; height: 12px; display: inline-block; }
@@ -460,7 +461,7 @@ b;
                                             <div class="chart-grid-line" style="bottom: 100%;" aria-hidden="true"><span class="grid-label" id="gridMax">30M</span></div>
                                             <div class="chart-grid-line" style="bottom: 50%;" aria-hidden="true"><span class="grid-label" id="gridMid">15M</span></div>
 
-                                            <div class="fy-group">
+                                            <div class="fy-group fy-previous">
                                                 <div class="bar bar-forecast" id="bar25F"></div>
                                                 <div class="bar bar-actual" id="bar25A"></div>
                                                 <div class="fy-label" aria-hidden="true">FY25</div>
