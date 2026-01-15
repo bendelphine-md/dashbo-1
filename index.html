@@ -3,284 +3,345 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maryland Project Dashboard - Raw Data Integration</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link
-  rel="stylesheet"
-  href="https://cdn.maryland.gov/mdwds/latest/css/mdwds.min.css"
-/>
+    <title>MITDP Dashboard</title>
     <style>
         :root {
-            --bg-color: #ffffff;
-            --card-bg: #f8f9fa; 
-            --text-dark: #1a202c;
-            --text-light: #718096;
+            --bg-color: #F8F9FA; 
+            --text-dark: #111111; 
+            --text-meta: #666666;
+            --card-bg: #FFFFFF;
             
-            /* Project Colors */
-            --col-procurement: #a0aec0; /* Gray */
-            --col-implementation: #2c5282; /* Dark Blue */
-            --col-om: #bee3f8; /* Light Blue */
+            /* Chart Colors */
+            --primary-blue: #2B5BA7; 
+            --primary-blue-border: #1a3a6c;
             
-            --col-forecast: #fbba00; /* Yellow */
-            --col-actual: #2c5282; /* Dark Blue */
+            --light-blue: #BDD4F9;    
+            --light-blue-border: #8fafe0;
+            
+            --grey-bar: #B0B0B0;      
+            --grey-bar-border: #808080;
+            
+            --chart-yellow: #FFC107; 
+            --chart-yellow-border: #b38600;
+            
+            --border-radius: 4px;
+            --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --focus-color: #005fcc;
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            margin: 0;
-            padding: 40px;
-            background-color: #fff;
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
             color: var(--text-dark);
+            line-height: 1.5;
+            padding: 20px;
         }
 
-        /* --- Selector --- */
-        .selector-container {
-            background: #dadadac7;
-            padding: 10px 10px;
+        /* --- Accessibility --- */
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+        .skip-link { position: absolute; top: -40px; left: 0; background: #000; color: white; padding: 8px; z-index: 2000; transition: top 0.2s; text-decoration: none; font-weight: bold; }
+        .skip-link:focus { top: 0; }
+        :focus-visible { outline: 3px solid var(--focus-color); outline-offset: 3px; z-index: 50; }
+        abbr { text-decoration: none; border-bottom: 1px dotted #666; cursor: help; }
+
+        /* --- Layout Container --- */
+        .dashboard-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* --- Top Bar (Search) --- */
+        .top-bar {
+            background-color: #E6E6E6;
+            padding: 20px;
+            border-radius: var(--border-radius);
             margin-bottom: 40px;
-            border-radius: 4px;
-            z-index: 100;
+        }
 
+        .combobox-wrapper { position: relative; max-width: 100%; }
+        .combobox-wrapper::after { content: "▼"; font-size: 0.8rem; color: #555; position: absolute; right: 20px; top: 16px; pointer-events: none; }
+        
+        .combobox-input {
+            width: 100%;
+            padding: 12px 15px;
+            padding-right: 40px; 
+            font-size: 16px;
+            border: 1px solid #ccc; 
+            border-radius: var(--border-radius);
+            background-color: white;
+            color: #333;
+            cursor: pointer; 
         }
-        select {
-            font-size: 14px;
-            outline: none;
-            cursor: pointer;
-            min-width: 200px;
-            padding: 10px;
-            /* font-weight: bold; */
+        .combobox-input:focus { border-color: var(--focus-color); outline: none; box-shadow: 0 0 0 3px rgba(0, 95, 204, 0.3); }
+
+        .combobox-list {
+            position: absolute; top: 100%; left: 0; right: 0;
+            background: white; border: 1px solid #ccc; border-top: none;
+            list-style: none; margin: 0; padding: 0; max-height: 300px; overflow-y: auto;
+            z-index: 100; display: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+        .combobox-wrapper[data-expanded="true"] .combobox-list { display: block; }
+        .combobox-option { padding: 12px; cursor: pointer; border-bottom: 1px solid #eee; color: #333; }
+        .combobox-option:hover, .combobox-option[aria-selected="true"] { background-color: #e6f0ff; color: #000; font-weight: bold; }
+        .match-text { background-color: #ffeb3b; color: #000; }
 
         /* --- Header Section --- */
-        .header-section {
+        .project-header {
+            margin-bottom: 40px;
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 60px;
-            padding-bottom: 20px;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .header-left {
-            max-width: 50%;
-        }
+        .header-left { margin-bottom: 10px; }
 
-        .proj-id {
-            font-size: 16px;
+        .mitdp-id {
+            color: #777;
             font-weight: 700;
-            color: var(--text-light);
-            margin-bottom: 5px;
+            font-size: 0.9rem;
             text-transform: uppercase;
+            margin-bottom: 5px;
+            display: block;
         }
 
-        .proj-name {
-            font-size: 36px;
-            font-weight: 800;
+        .project-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111;
             line-height: 1.1;
-            color: var(--text-dark);
             margin: 0;
         }
 
+        /* Meta Grid */
         .header-right {
             display: flex;
-            gap: 80px;
-            margin-top: 10px; 
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .header-metric h3 {
-            font-size: 12px;
+        .meta-item label {
+            display: block;
+            font-size: 0.75rem;
+            color: #777;
             font-weight: 700;
-            color: var(--text-light);
             text-transform: uppercase;
-            margin: 0 0 5px 0;
-            letter-spacing: 0.5px;
+            margin-bottom: 4px;
         }
 
-        .header-metric p {
-            font-size: 18px;
+        .meta-item span {
+            font-size: 1.1rem;
             font-weight: 700;
-            margin: 0;
-            color: var(--text-dark);
+            color: #111;
         }
 
-        /* --- Main Grid Layout --- */
-        .main-grid {
+        /* --- Content Grid --- */
+        .main-content {
             display: grid;
-            grid-template-columns: 300px 1fr; /* Left Summary, Right Visuals */
-            gap: 60px;
+            grid-template-columns: 1fr;
+            gap: 40px;
         }
 
-        /* Left Column: Summary */
-        .summary-col h3 {
-            font-size: 12px;
+        /* Summary Section */
+        .summary-section { color: #222; }
+        .section-label {
+            font-size: 0.75rem;
+            color: #777;
             font-weight: 700;
-            color: var(--text-light);
             text-transform: uppercase;
-            margin: 0 0 15px 0;
-            letter-spacing: 0.5px;
+            margin-bottom: 15px;
+            display: block;
         }
+        .summary-text { white-space: pre-wrap; margin-bottom: 20px; line-height: 1.6; }
+        .note { font-style: italic; color: #555; font-size: 0.9rem; }
 
-        .summary-text {
-            font-size: 16px;
-            line-height: 1.6;
-            color: #2d3748;
-            margin-bottom: 30px;
-        }
-
-        .summary-note {
-            font-style: italic;
-            color: var(--text-light);
-            font-size: 14px;
-            border-top: 1px solid #e2e8f0;
-            padding-top: 15px;
-        }
-
-        /* Right Column: Visual Cards */
-        .visuals-col {
+        /* Cards Column */
+        .cards-column {
             display: flex;
             flex-direction: column;
             gap: 30px;
         }
 
         .card {
-            background-color: var(--card-bg);
+            background: var(--card-bg);
+            padding: 0; 
+        }
+        
+        .card-inner {
+            background-color: #FAFAFA;
             padding: 30px;
-            border-radius: 4px;
+            border-radius: var(--border-radius);
         }
 
         .card-title {
-            font-size: 18px;
+            font-size: 1.1rem;
             font-weight: 700;
-            margin: 0 0 30px 0;
-            color: var(--text-dark);
+            margin-bottom: 30px;
+            color: #111;
         }
 
-        /* --- Timeline Card --- */
-        .gantt-container {
-            margin-bottom: 40px;
-        }
-
-        .timeline-years {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: var(--text-light);
-            margin-bottom: 10px;
-            padding: 0 2%; 
-        }
-
-        .timeline-track-wrapper {
-            position: relative;
-            height: 50px;
+        /* --- Timeline --- */
+        .timeline-container { position: relative; margin-bottom: 40px; padding: 20px; background: white; border-radius: 4px; }
+        
+        .timeline-years { 
+            display: flex; 
+            justify-content: space-between; 
+            font-size: 0.75rem; 
+            color: #555; 
+            margin-bottom: 10px; 
+            position: relative; 
         }
         
-        .grid-lines {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            display: flex;
-            justify-content: space-between;
-            pointer-events: none;
-            z-index: 0;
-            padding: 0 2%;
-        }
-        .grid-line {
-            width: 1px;
-            height: 100%;
-            border-left: 1px dashed #cbd5e0;
-        }
+        /* Dotted Lines */
+        .year-marker { position: absolute; top: 25px; bottom: -10px; border-left: 1px dotted #ccc; z-index: 0; }
 
-        .timeline-track {
-            position: relative;
-            height: 100%;
-            width: 100%;
-            z-index: 1;
-            display: flex;
-            align-items: center;
-        }
-
+        .timeline-bar-track { position: relative; height: 40px; background: transparent; width: 100%; z-index: 1; margin-bottom: 20px; }
+        
         .phase-bar {
-            height: 40px; 
-            position: absolute;
-            top: 5px;
+            position: absolute; height: 100%; top: 0; cursor: pointer; transition: opacity 0.2s;
+            border-right: 1px solid rgba(255,255,255,0.5); 
         }
+        .phase-bar:hover { opacity: 0.9; z-index: 2; box-shadow: 0 0 5px rgba(0,0,0,0.2); }
 
-        .timeline-legend {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 15px;
-        }
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            color: #4a5568;
-        }
-        .legend-box {
-            width: 16px;
-            height: 16px;
-            border-radius: 2px;
-        }
+        .phase-procurement { background-color: var(--grey-bar); }
+        .phase-implementation { background-color: var(--primary-blue); }
+        .phase-om { background-color: var(--light-blue); }
 
-        /* Timeline Metrics (Bottom of card) */
-        .timeline-metrics {
-            display: flex;
-            justify-content: space-around;
+        /* Legend */
+        .legend { display: flex; justify-content: center; gap: 20px; font-size: 0.85rem; color: #444; flex-wrap: wrap; margin-bottom: 20px;}
+        .legend-item { display: flex; align-items: center; gap: 8px; }
+        .legend-box { width: 16px; height: 16px; }
+        .box-proc { background-color: var(--grey-bar); }
+        .box-imp { background-color: var(--primary-blue); }
+        .box-om { background-color: var(--light-blue); }
+
+        /* Timeline Stats Grid */
+        .timeline-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             text-align: center;
+            gap: 20px;
             margin-top: 30px;
-            padding-top: 20px;
         }
+        .timeline-stats > div:last-child { grid-column: span 2; }
 
-        .t-metric-val {
-            font-size: 24px;
-            font-weight: 700;
-            display: block;
-            margin-bottom: 5px;
-        }
-        .t-metric-lbl {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-light);
-        }
+        .stat-val { font-size: 1.4rem; font-weight: 700; display: block; margin-bottom: 5px; color: #111; }
+        .stat-label { font-size: 0.85rem; color: #777; font-weight: 700; }
 
         /* --- Finance Card --- */
-        .finance-layout {
-            display: grid;
-            grid-template-columns: 200px 1fr;
-            gap: 40px;
+        .finance-wrapper {
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 20px;
             align-items: center;
+            background: white;
+            padding: 20px;
+            border-radius: 4px;
         }
-
-        .eac-container {
+        
+        .eac-display {
             text-align: center;
-        }
-        .eac-val {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--text-dark);
-            margin-bottom: 5px;
-        }
-        .eac-lbl {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-light);
-            line-height: 1.3;
-        }
-
-        .chart-container {
-            height: 180px;
-            position: relative;
             width: 100%;
         }
+        .eac-val { font-size: 1.5rem; font-weight: 800; color: #333; margin-bottom: 5px; }
+        .eac-label { font-size: 0.85rem; color: #777; font-weight: 700; line-height: 1.2; display: block; max-width: 150px; margin: 0 auto;}
 
-        .chart-legend-custom {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 10px;
-            margin-left: 20px;
+        .chart-wrapper-inner { flex-grow: 1; display: flex; flex-direction: column; width: 100%; }
+
+        .chart-container {
+            display: flex; align-items: flex-end; justify-content: center; height: 180px; gap: 20px;
+            position: relative; padding-bottom: 30px; padding-top: 25px;
+            border-bottom: 1px solid #eee; width: 100%;
         }
+        
+        .chart-grid-line { position: absolute; left: 0; right: 0; border-top: 1px dotted #ccc; z-index: 0; }
+        .grid-label { position: absolute; left: 0; top: -10px; font-size: 0.7rem; color: #666; background: rgba(255,255,255,0.8); padding-right: 4px; }
+
+        .fy-group { display: flex; align-items: flex-end; gap: 4px; position: relative; z-index: 1; height: 100%; }
+        .fy-label { position: absolute; bottom: -30px; left: 0; right: 0; text-align: center; font-weight: 700; font-size: 0.8rem; color: #111; }
+
+        .bar {
+            width: 45px; transition: all 0.2s ease; position: relative; display: flex; justify-content: center; cursor: pointer;
+        }
+        .bar:hover { opacity: 0.9; }
+        
+        .bar-value-label {
+            position: absolute; bottom: 5px;
+            font-size: 0.75rem; font-weight: 700; color: #111;
+            z-index: 2;
+        }
+        .bar-actual .bar-value-label { color: white; }
+
+        .bar-forecast { background-color: var(--chart-yellow); }
+        .bar-actual { background-color: var(--primary-blue); }
+
+        .chart-legend {
+            margin-top: 15px; display: flex; flex-direction: column; align-items: flex-end; gap: 5px; font-size: 0.8rem; color: #333;
+        }
+        .legend-row { display: flex; align-items: center; gap: 8px; }
+        .legend-square { width: 12px; height: 12px; display: inline-block; }
+        .sq-y { background: var(--chart-yellow); }
+        .sq-b { background: var(--primary-blue); }
+
+        /* Tooltip */
+        .tooltip {
+            position: absolute; background-color: #333; color: #fff; padding: 8px 12px; border-radius: 4px;
+            font-size: 0.85rem; pointer-events: none; z-index: 1000; display: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2); white-space: nowrap;
+        }
+        .tooltip::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #333 transparent transparent transparent; }
+
+
+        /* --- DESKTOP LAYOUT --- */
+        @media (min-width: 992px) {
+            
+            .project-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 50px;
+            }
+            .header-left { margin-bottom: 0; max-width: 600px; }
+            .header-right { 
+                display: flex; 
+                flex-direction: row; 
+                gap: 60px;
+                text-align: left;
+                padding-top: 5px;
+            }
+
+            .main-content {
+                grid-template-columns: 30% 65%;
+                gap: 5%;
+            }
+
+            .timeline-stats {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+            .timeline-stats > div:last-child { grid-column: auto; }
+
+            .finance-wrapper {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .eac-display {
+                width: 25%;
+                text-align: center;
+                padding-top: 0;
+            }
+            .chart-wrapper-inner {
+                width: 70%;
+            }
+        }
+        
     </style>
 </head>
+
+<body>
+
 <body style="display:none" id="protected-page">
 
 <script>
@@ -305,118 +366,127 @@
     })();
 </script>
 
-    <div class="selector-container">
-        <select id="projectSelect" onchange="renderProject(this.value)"></select>
-    </div>
+    <a href="#dashboardContent" class="skip-link">Skip to main content</a>
+    <div id="chartTooltip" class="tooltip" aria-hidden="true"></div>
 
-    <div class="header-section">
-        <div class="header-left">
-            <div class="proj-id" id="headId">-</div>
-            <h1 class="proj-name" id="headName">-</h1>
-        </div>
-        <div class="header-right">
-            <div class="header-metric">
-                <h3>Accountable Agency</h3>
-                <p id="headAgency">-</p>
-            </div>
-            <div class="header-metric">
-                <h3>Project Phase</h3>
-                <p id="headPhase">-</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="main-grid">
+    <div class="dashboard-wrapper">
         
-        <div class="summary-col">
-            <h3>Project Summary</h3>
-            <div class="summary-text" id="projSummary">
-                Loading...
-            </div>
-            <div class="summary-note">
-                Note: This is a summary, contact accountable agency for detailed information.
+        <div class="top-bar">
+            <div class="combobox-wrapper" id="comboboxWrapper">
+                <label id="comboLabel" for="projectSearch" class="sr-only">Search or Select Project</label>
+                <input type="text" id="projectSearch" class="combobox-input" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-haspopup="listbox" aria-controls="projectListbox" placeholder="Select project">
+                <ul id="projectListbox" role="listbox" class="combobox-list" aria-labelledby="comboLabel"></ul>
+                <div id="comboStatus" class="sr-only" role="status" aria-live="polite"></div>
             </div>
         </div>
 
-        <div class="visuals-col">
-
-            <div class="card">
-                <h2 class="card-title">Current schedule</h2>
-                
-                <div class="gantt-container">
-                    <div class="timeline-years">
-                        <span>2016</span><span>2018</span><span>2020</span><span>2022</span><span>2024</span><span>2026</span><span>2028</span><span>2030</span>
+        <main id="dashboardContent" style="display:none;" tabindex="-1">
+            
+            <header class="project-header">
+                <div class="header-left">
+                    <div class="mitdp-id" id="displayId">MITDP-ID</div>
+                    <h1 class="project-name" id="displayName">Project Name</h1>
+                </div>
+                <div class="header-right">
+                    <div class="meta-item">
+                        <label>Accountable Agency</label>
+                        <span id="displayAgency">Agency Name</span>
                     </div>
+                    <div class="meta-item">
+                        <label>Project Phase</label>
+                        <span id="displayPhase">Phase Name</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="main-content">
+                <section class="summary-section" aria-labelledby="summary-heading">
+                    <span id="summary-heading" class="section-label">Project Summary</span>
+                    <div class="summary-text" id="displaySummary">Summary text...</div>
+                    <div class="note">Note: This is a summary, contact accountable agency for detailed information.</div>
+                </section>
+
+                <section class="cards-column">
                     
-                    <div class="timeline-track-wrapper">
-                        <div class="grid-lines">
-                            <div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div>
-                            <div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div>
-                            <div class="grid-line"></div><div class="grid-line"></div>
-                        </div>
-                        <div class="timeline-track" id="timelineTrack">
+                    <div class="card">
+                        <div class="card-inner">
+                            <h2 class="card-title">Current schedule</h2>
+                            
+                            <div class="timeline-container" role="img" aria-label="Project Schedule Chart">
+                                <div class="timeline-years" aria-hidden="true">
+                                    <span>2016</span><span>2018</span><span>2020</span><span>2022</span><span>2024</span><span>2026</span><span>2028</span><span>2030</span><span>2032</span>
+                                </div>
+                                <div class="timeline-bar-track" id="timelineTrack"></div>
+                                
+                                <div class="legend" aria-hidden="true">
+                                    <div class="legend-item"><div class="legend-box box-proc"></div> Procurement</div>
+                                    <div class="legend-item"><div class="legend-box box-imp"></div> Implementation</div>
+                                    <div class="legend-item"><div class="legend-box box-om"></div> Operations & Maintenance</div>
+                                </div>
                             </div>
+
+                            <div class="timeline-stats">
+                                <div>
+                                    <span class="stat-val" id="dispLen">12 - 14 years</span>
+                                    <span class="stat-label">Estimated Project Length</span>
+                                </div>
+                                <div>
+                                    <span class="stat-val" id="dispRem">1 - 2 years</span>
+                                    <span class="stat-label">Estimated Time Remaining</span>
+                                </div>
+                                <div>
+                                    <span class="stat-val" id="dispEnd">2028</span>
+                                    <span class="stat-label">Estimated End Year</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="timeline-legend">
-                        <div class="legend-item">
-                            <div class="legend-box" style="background:var(--col-procurement)"></div> Procurement
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-box" style="background:var(--col-implementation)"></div> Implementation
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-box" style="background:var(--col-om)"></div> Operations & Maintenance
-                        </div>
-                    </div>
-                </div>
+                    <div class="card">
+                        <div class="card-inner">
+                            <h2 class="card-title">Amount Spent</h2>
+                            
+                            <div class="finance-wrapper">
+                                <div class="eac-display">
+                                    <div class="eac-val" id="dispEAC">$75M - $80M</div>
+                                    <span class="eac-label">Project Estimate-at-Completion</span>
+                                </div>
 
-                <div class="timeline-metrics">
-                    <div>
-                        <span class="t-metric-val" id="metricLength">-</span>
-                        <span class="t-metric-lbl">Estimated Project Length</span>
+                                <div class="chart-wrapper-inner">
+                                    <div style="display:flex; align-items: center;">
+                                        <div class="chart-container" id="chartContainer" role="graphics-document" aria-label="Spend Chart">
+                                            <div class="chart-grid-line" style="bottom: 100%;" aria-hidden="true"><span class="grid-label" id="gridMax">30M</span></div>
+                                            <div class="chart-grid-line" style="bottom: 50%;" aria-hidden="true"><span class="grid-label" id="gridMid">15M</span></div>
+
+                                            <div class="fy-group">
+                                                <div class="bar bar-forecast" id="bar25F"></div>
+                                                <div class="bar bar-actual" id="bar25A"></div>
+                                                <div class="fy-label" aria-hidden="true">FY25</div>
+                                            </div>
+                                            <div class="fy-group">
+                                                <div class="bar bar-forecast" id="bar26F"></div>
+                                                <div class="bar bar-actual" id="bar26A" style="display:none;"></div>
+                                                <div class="fy-label" aria-hidden="true">FY26</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="chart-legend" aria-hidden="true">
+                                            <div class="legend-row"><span class="legend-square sq-y"></span> Forecasted Spend</div>
+                                            <div class="legend-row"><span class="legend-square sq-b"></span> Actual Spend</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <span class="t-metric-val" id="metricRemaining">-</span>
-                        <span class="t-metric-lbl">Estimated Time Remaining</span>
-                    </div>
-                    <div>
-                        <span class="t-metric-val" id="metricEndYear">-</span>
-                        <span class="t-metric-lbl">Estimated End Year</span>
-                    </div>
-                </div>
+
+                </section>
             </div>
-
-            <div class="card">
-                <h2 class="card-title">Amount Spent</h2>
-                <div class="finance-layout">
-                    <div class="eac-container">
-                        <div class="eac-val" id="eacValue">-</div>
-                        <div class="eac-lbl">Project<br>Estimate-at-<br>Completion</div>
-                    </div>
-                    
-                    <div style="display:flex; align-items:center; width:100%;">
-                        <div class="chart-container">
-                            <canvas id="financeChart"></canvas>
-                        </div>
-                        <div class="chart-legend-custom">
-                            <div class="legend-item">
-                                <div class="legend-box" style="background:var(--col-forecast)"></div> Forecasted Spend
-                            </div>
-                            <div class="legend-item">
-                                <div class="legend-box" style="background:var(--col-actual)"></div> Actual Spend
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+        </main>
     </div>
 
 <script>
-    // --- RAW JSON DATA ---
-    const projectsData = [
+    const projects = [
   {
     "MITDP ID": "DBM-23-CBIS",
     "Name": "Capital Budgeting Information System (CBIS) replacement",
@@ -1859,157 +1929,326 @@
   }
 ];
 
-    let myChart = null;
-
-    // Helper: Parse currency strings (e.g. "$1,639,972.54" -> 1639972.54)
-    function parseCurrency(str) {
-        if (!str) return 0;
-        // remove '$' and ',' then parse
-        return parseFloat(str.toString().replace(/[$,]/g, '')) || 0;
-    }
-
-    // Initialize logic
-    window.onload = function() {
-        populateSelector();
-        initChart();
-        renderProject(0); // Default to Payroll to show good data
+    const parseCurrency = (str) => {
+        if(!str) return 0;
+        return parseFloat(str.replace(/[^0-9.-]+/g,""));
     };
 
-    function populateSelector() {
-        const sel = document.getElementById('projectSelect');
-        projectsData.forEach((p, idx) => {
-            const opt = document.createElement('option');
-            opt.value = idx;
-            opt.text = p.Name;
-            sel.appendChild(opt);
+    const getDateVal = (dateStr) => {
+        const d = new Date(dateStr);
+        if(isNaN(d)) return 0;
+        const year = d.getFullYear();
+        const startOfYear = new Date(year, 0, 1);
+        const endOfYear = new Date(year + 1, 0, 1);
+        const yearDuration = endOfYear - startOfYear;
+        const passed = d - startOfYear;
+        return year + (passed / yearDuration);
+    };
+
+    const fmtMillions = (val) => {
+        if(val >= 1000000) return Math.round(val/1000000) + "M";
+        if(val >= 1000) return Math.round(val/1000) + "K";
+        return val;
+    };
+
+    const fmtDecimal = (val) => {
+        if(val >= 1000000) return (val/1000000).toFixed(1) + "M";
+        if(val >= 1000) return Math.round(val/1000) + "K";
+        return Math.round(val);
+    };
+
+    const fmtExact = (val) => {
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(val);
+    };
+
+    const selectEl = document.getElementById('projectSelect');
+    const contentArea = document.getElementById('dashboardContent');
+    const tooltipEl = document.getElementById('chartTooltip');
+
+    const wrapper = document.getElementById('comboboxWrapper');
+    const input = document.getElementById('projectSearch');
+    const listbox = document.getElementById('projectListbox');
+    const status = document.getElementById('comboStatus');
+    let activeIndex = -1;
+    let filteredProjects = [];
+    let allOptionsCache = [];
+
+    window.addEventListener('DOMContentLoaded', () => {
+        allOptionsCache = projects.map((p, i) => {
+            return { originalIndex: i, label: `${p["MITDP ID"]} ${p.Name}` };
         });
+
+        const defaultIndex = projects.findIndex(p => p["MITDP ID"] === "COMP-16-ITS");
+        const idx = defaultIndex > -1 ? defaultIndex : 0;
+        renderProject(projects[idx]);
+    });
+
+    function showAllOptions() {
+        renderOptions(allOptionsCache, ''); 
+        filteredProjects = allOptionsCache; 
     }
 
-    function initChart() {
-        const ctx = document.getElementById('financeChart').getContext('2d');
-        myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['FY25 Forecast', 'FY25 Actual'],
-                datasets: [{
-                    data: [0, 0],
-                    backgroundColor: ['#fbba00', '#2c5282'], // Yellow, Blue
-                    borderRadius: 2,
-                    barPercentage: 0.6,
-                    categoryPercentage: 0.8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let val = context.parsed.y;
-                                if(val >= 1000000) return '$' + (val/1000000).toFixed(2) + 'M';
-                                return '$' + val.toLocaleString();
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: '#e2e8f0',
-                            borderDash: [5, 5]
-                        },
-                        ticks: {
-                            callback: function(val) {
-                                return '$' + (val/1000000).toFixed(0) + 'M';
-                            },
-                            font: { size: 10 }
-                        },
-                        border: { display: false }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: { display: false }, // Hiding X labels as we have legend
-                        border: { display: false }
-                    }
-                }
+    function filterOptions(query) {
+        const q = query.toLowerCase();
+        filteredProjects = allOptionsCache.filter(item => item.label.toLowerCase().includes(q));
+        renderOptions(filteredProjects, q);
+    }
+
+    function renderOptions(items, query) {
+        listbox.innerHTML = '';
+        if (items.length === 0) {
+            const li = document.createElement('li');
+            li.className = 'combobox-option';
+            li.textContent = 'No results found';
+            listbox.appendChild(li);
+            status.textContent = 'No results found';
+            return;
+        }
+
+        status.textContent = `${items.length} results available. Use up and down arrow keys to navigate.`;
+
+        items.forEach((item, index) => {
+            const li = document.createElement('li');
+            li.id = `option-${index}`;
+            li.className = 'combobox-option';
+            li.setAttribute('role', 'option');
+            li.setAttribute('aria-selected', 'false');
+            
+            if(query) {
+                const regex = new RegExp(`(${query})`, 'gi');
+                li.innerHTML = item.label.replace(regex, '<span class="match-text">$1</span>');
+            } else {
+                li.textContent = item.label;
             }
+
+            li.addEventListener('mousedown', (e) => {
+                e.preventDefault(); 
+                selectOption(item);
+            });
+
+            listbox.appendChild(li);
         });
     }
 
-    function renderProject(index) {
-        const p = projectsData[index];
-
-        // 1. Header
-        document.getElementById('headId').innerText = p["MITDP ID"];
-        document.getElementById('headName').innerText = p.Name;
-        document.getElementById('headAgency').innerText = p.Agency;
-        document.getElementById('headPhase').innerText = p.Phase;
-
-        // 2. Summary
-        document.getElementById('projSummary').innerText = p["Project Summary"];
-
-        // 3. Schedule Metrics
-        document.getElementById('metricLength').innerText = p["Project Length"];
-        document.getElementById('metricRemaining').innerText = p["Project Time Remaining"];
-        document.getElementById('metricEndYear').innerText = p["End Year"];
-
-        // 4. Draw Gantt
-        drawGantt(p);
-
-        // 5. Finance
-        document.getElementById('eacValue').innerText = p.EAC;
-        
-        // Use helper to parse the strings
-        const forecast = parseCurrency(p["FY25 Forecasted Spend"]);
-        const actual = parseCurrency(p["FY25 Actual Spend"]);
-
-        myChart.data.datasets[0].data = [forecast, actual];
-        myChart.update();
+    function selectOption(item) {
+        input.value = item.label;
+        renderProject(projects[item.originalIndex]);
+        closeListbox();
+        input.focus(); 
     }
 
-    function drawGantt(p) {
+    function openListbox() {
+        wrapper.setAttribute('data-expanded', 'true');
+        input.setAttribute('aria-expanded', 'true');
+        if(input.value.trim() === '') showAllOptions();
+        else filterOptions(input.value);
+    }
+
+    function closeListbox() {
+        wrapper.setAttribute('data-expanded', 'false');
+        input.setAttribute('aria-expanded', 'false');
+        activeIndex = -1;
+        input.setAttribute('aria-activedescendant', '');
+    }
+
+    function setActiveOption(index) {
+        const options = listbox.querySelectorAll('[role="option"]');
+        if (options.length === 0) return;
+        options.forEach(opt => {
+            opt.setAttribute('aria-selected', 'false');
+            opt.classList.remove('active');
+        });
+        if (index >= 0 && index < options.length) {
+            const activeOpt = options[index];
+            activeOpt.setAttribute('aria-selected', 'true');
+            input.setAttribute('aria-activedescendant', activeOpt.id);
+            activeOpt.scrollIntoView({ block: 'nearest' });
+        }
+    }
+
+    input.addEventListener('click', () => {
+        input.value = '';
+        showAllOptions(); 
+        openListbox();    
+    });
+
+    input.addEventListener('input', (e) => {
+        openListbox();
+        if(e.target.value.trim() === '') showAllOptions();
+        else filterOptions(e.target.value);
+        activeIndex = -1;
+    });
+
+    input.addEventListener('keydown', (e) => {
+        const options = listbox.querySelectorAll('[role="option"]');
+        switch(e.key) {
+            case 'ArrowDown':
+                e.preventDefault();
+                if (wrapper.getAttribute('data-expanded') !== 'true') openListbox();
+                activeIndex = (activeIndex + 1) % options.length;
+                setActiveOption(activeIndex);
+                break;
+            case 'ArrowUp':
+                e.preventDefault();
+                if (wrapper.getAttribute('data-expanded') !== 'true') return;
+                activeIndex = (activeIndex - 1 + options.length) % options.length;
+                setActiveOption(activeIndex);
+                break;
+            case 'Enter':
+                e.preventDefault();
+                if (activeIndex >= 0 && options[activeIndex]) {
+                    if(filteredProjects[activeIndex]) selectOption(filteredProjects[activeIndex]);
+                }
+                break;
+            case 'Escape':
+                e.preventDefault();
+                closeListbox();
+                break;
+            case 'Tab':
+                closeListbox();
+                break;
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!wrapper.contains(e.target)) closeListbox();
+    });
+
+    function renderProject(p) {
+        contentArea.style.display = 'block';
+
+        document.getElementById('displayId').innerHTML = p["MITDP ID"];
+        document.getElementById('displayName').textContent = p.Name;
+        document.getElementById('displayAgency').textContent = p.Agency;
+        document.getElementById('displayPhase').textContent = p.Phase;
+        document.getElementById('displaySummary').textContent = p["Project Summary"];
+        document.getElementById('dispLen').textContent = p["Project Length"];
+        document.getElementById('dispRem').textContent = p["Project Time Remaining"];
+        document.getElementById('dispEnd').textContent = p["End Year"];
+        document.getElementById('dispEAC').textContent = p.EAC;
+
+        const positionTooltip = (e, targetEl) => {
+            const rect = targetEl.getBoundingClientRect();
+            const tipRect = tooltipEl.getBoundingClientRect();
+            let top = rect.top + window.scrollY - tipRect.height - 8; 
+            let left = rect.left + window.scrollX + (rect.width / 2) - (tipRect.width / 2);
+            tooltipEl.style.top = top + 'px';
+            tooltipEl.style.left = left + 'px';
+        };
+
+        // Timeline Logic
+        const timelineStart = 2016;
+        const timelineEnd = 2032; // Updated to 2032 based on previous request
+        const totalDuration = timelineEnd - timelineStart;
+
+        const getLeft = (dateVal) => ((dateVal - timelineStart) / totalDuration) * 100;
+        const getWidth = (start, end) => ((end - start) / totalDuration) * 100;
+
+        const procStart = getDateVal(p["Procurement Start - Current"]);
+        const procEnd = getDateVal(p["Procurement End - Current"]);
+        const impStart = getDateVal(p["Implementation Start - Current"]);
+        const impEnd = getDateVal(p["Implementation End - Current"]);
+        const omStart = getDateVal(p["O&M Start - Current"]);
+        const omEnd = getDateVal(p["O&M End - Current"]);
+
         const track = document.getElementById('timelineTrack');
         track.innerHTML = '';
 
-        // Fixed range: 2016 to 2030 (14 years)
-        const minYear = 2016;
-        const maxYear = 2030;
-        const span = maxYear - minYear;
+        const addPhaseBar = (start, end, className, label, dateStartStr, dateEndStr) => {
+            if(end <= start) return;
+            if(end < timelineStart || start > timelineEnd) return; 
 
-        // Access the specific "- Current" keys
-        const phases = [
-            { s: p["Procurement Start - Current"], e: p["Procurement End - Current"], c: 'var(--col-procurement)' },
-            { s: p["Implementation Start - Current"], e: p["Implementation End - Current"], c: 'var(--col-implementation)' },
-            { s: p["O&M Start - Current"], e: p["O&M End - Current"], c: 'var(--col-om)' }
-        ];
-
-        phases.forEach(ph => {
-            if(!ph.s || !ph.e) return;
-            const startD = new Date(ph.s);
-            const endD = new Date(ph.e);
+            const div = document.createElement('div');
+            div.className = `phase-bar ${className}`;
+            div.style.left = Math.max(0, getLeft(start)) + '%';
+            div.style.width = getWidth(start, end) + '%';
             
-            const startVal = startD.getFullYear() + startD.getMonth()/12;
-            const endVal = endD.getFullYear() + endD.getMonth()/12;
+            div.setAttribute('tabindex', '0');
+            div.setAttribute('role', 'graphics-symbol');
+            div.setAttribute('aria-label', `${label} Phase: ${dateStartStr} to ${dateEndStr}`);
+            
+            track.appendChild(div);
 
-            let leftPct = ((startVal - minYear) / span) * 100;
-            let widthPct = ((endVal - startVal) / span) * 100;
+            div.onmouseenter = (e) => {
+                tooltipEl.innerHTML = `<strong>${label}</strong><br>${dateStartStr} - ${dateEndStr}`;
+                tooltipEl.style.display = 'block';
+                positionTooltip(e, div);
+            };
+            div.onmousemove = (e) => positionTooltip(e, div);
+            div.onmouseleave = () => tooltipEl.style.display = 'none';
 
-            // Bounds check visual
-            if(leftPct < 0) { widthPct += leftPct; leftPct = 0; }
-            if(widthPct < 0) return;
+            div.onfocus = (e) => {
+                tooltipEl.innerHTML = `<strong>${label}</strong><br>${dateStartStr} - ${dateEndStr}`;
+                tooltipEl.style.display = 'block';
+                positionTooltip(e, div);
+            };
+            div.onblur = () => tooltipEl.style.display = 'none';
+        };
 
-            const bar = document.createElement('div');
-            bar.className = 'phase-bar';
-            bar.style.left = leftPct + '%';
-            bar.style.width = widthPct + '%';
-            bar.style.backgroundColor = ph.c;
-            track.appendChild(bar);
-        });
+        addPhaseBar(procStart, procEnd, 'phase-procurement', 'Procurement', p["Procurement Start - Current"], p["Procurement End - Current"]);
+        addPhaseBar(impStart, impEnd, 'phase-implementation', 'Implementation', p["Implementation Start - Current"], p["Implementation End - Current"]);
+        addPhaseBar(omStart, omEnd, 'phase-om', 'Operations & Maintenance', p["O&M Start - Current"], p["O&M End - Current"]);
+
+        // Chart Logic
+        const v25F = parseCurrency(p["FY25 Forecasted Spend"]);
+        const v25A = parseCurrency(p["FY25 Actual Spend"]);
+        const v26F = parseCurrency(p["FY26 Forecasted Spend"]);
+        const v26A = 0; 
+
+        let maxVal = Math.max(v25F, v25A, v26F, v26A);
+        if(maxVal === 0) maxVal = 100;
+        const scaleMax = maxVal * 1.2;
+
+        document.getElementById('gridMax').textContent = fmtMillions(scaleMax);
+        document.getElementById('gridMid').textContent = fmtMillions(scaleMax / 2);
+
+        const setBar = (id, val, rawString, headerLabel) => {
+            const el = document.getElementById(id);
+            const pct = (val / scaleMax) * 100;
+            el.style.height = pct + '%';
+            
+            el.innerHTML = '';
+            if (val > 0) {
+                const label = document.createElement('div');
+                label.className = 'bar-value-label';
+                label.textContent = fmtDecimal(val);
+                el.appendChild(label);
+            }
+            
+            if(val === 0) el.style.display = 'none';
+            else el.style.display = 'flex';
+
+            let tooltipText = rawString;
+            if(!tooltipText || tooltipText === "0" || tooltipText === "$0") {
+                tooltipText = fmtExact(val);
+            }
+
+            el.setAttribute('tabindex', '0');
+            el.setAttribute('role', 'graphics-symbol');
+            el.setAttribute('aria-label', `${headerLabel}: ${tooltipText}`);
+
+            el.onmouseenter = (e) => {
+                tooltipEl.innerHTML = `<strong>${headerLabel}</strong><br>${tooltipText}`;
+                tooltipEl.style.display = 'block';
+                positionTooltip(e, el);
+            };
+            el.onmousemove = (e) => positionTooltip(e, el);
+            el.onmouseleave = () => tooltipEl.style.display = 'none';
+
+            el.onfocus = (e) => {
+                tooltipEl.innerHTML = `<strong>${headerLabel}</strong><br>${tooltipText}`;
+                tooltipEl.style.display = 'block';
+                positionTooltip(e, el);
+            };
+            el.onblur = () => tooltipEl.style.display = 'none';
+        };
+        
+        setBar('bar25F', v25F, p["FY25 Forecasted Spend"], "FY25 Forecasted Spend");
+        setBar('bar25A', v25A, p["FY25 Actual Spend"], "FY25 Actual Spend");
+        setBar('bar26F', v26F, p["FY26 Forecasted Spend"], "FY26 Forecasted Spend");
+        setBar('bar26A', v26A, "$0", "FY26 Actual Spend");
     }
-
 </script>
+
 </body>
 </html>
