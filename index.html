@@ -2003,7 +2003,6 @@ b;
         return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(val);
     };
 
-    const selectEl = document.getElementById('projectSelect');
     const contentArea = document.getElementById('dashboardContent');
     const tooltipEl = document.getElementById('chartTooltip');
 
@@ -2063,8 +2062,9 @@ b;
                 li.textContent = item.label;
             }
 
-            li.addEventListener('mousedown', (e) => {
-                e.preventDefault(); 
+            // FIX 1: Use 'click' instead of 'mousedown' and stop propagation
+            li.addEventListener('click', (e) => {
+                e.stopPropagation(); 
                 selectOption(item);
             });
 
@@ -2074,8 +2074,14 @@ b;
 
     function selectOption(item) {
         input.value = item.label;
-        renderProject(projects[item.originalIndex]);
+        
+        // FIX 2: Close listbox BEFORE rendering to ensure it closes even if rendering fails
         closeListbox();
+        
+        // Render
+        renderProject(projects[item.originalIndex]);
+        
+        // Restore focus
         input.focus(); 
     }
 
@@ -2109,6 +2115,8 @@ b;
     }
 
     input.addEventListener('click', () => {
+        // Optional: Only clear if you want users to restart search on every click. 
+        // If not, remove "input.value = ''".
         input.value = '';
         showAllOptions(); 
         openListbox();    
@@ -2157,6 +2165,8 @@ b;
     });
 
     function renderProject(p) {
+        if (!p) return; // Safety check
+
         contentArea.style.display = 'block';
 
         document.getElementById('displayId').innerHTML = p["MITDP ID"];
@@ -2180,7 +2190,7 @@ b;
 
         // Timeline Logic
         const timelineStart = 2016;
-        const timelineEnd = 2032; // Updated to 2032 based on previous request
+        const timelineEnd = 2032;
         const totalDuration = timelineEnd - timelineStart;
 
         const getLeft = (dateVal) => ((dateVal - timelineStart) / totalDuration) * 100;
@@ -2235,11 +2245,11 @@ b;
         const v25F = parseCurrency(p["FY25 Forecasted Spend"]);
         const v25A = parseCurrency(p["FY25 Actual Spend"]);
         const v26F = parseCurrency(p["FY26 Forecasted Spend"]);
-        const v26Fund = parseCurrency(p["FY26 Project Funding"]); // Get funding value
+        const v26Fund = parseCurrency(p["FY26 Project Funding"]); 
 
         const v26A = 0; 
 
-        let maxVal = Math.max(v25F, v25A, v26F, v26A, v26Fund); // Include funding in max calculation
+        let maxVal = Math.max(v25F, v25A, v26F, v26A, v26Fund); 
         if(maxVal === 0) maxVal = 100;
         const scaleMax = maxVal * 1.2;
 
@@ -2248,6 +2258,9 @@ b;
 
         const setBar = (id, val, rawString, headerLabel) => {
             const el = document.getElementById(id);
+            // FIX 3: ADDED NULL CHECK to prevent crash if element is commented out
+            if (!el) return; 
+
             const pct = (val / scaleMax) * 100;
             el.style.height = pct + '%';
             
