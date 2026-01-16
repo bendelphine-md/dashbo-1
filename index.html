@@ -19,14 +19,19 @@ b;
             --light-blue: #BDD4F9;    
             --light-blue-border: #8fafe0;
             
-            --grey-bar: #B0B0B0;      
+            --grey-bar: #777781;      
             --grey-bar-border: #808080;
             
             --chart-yellow: #FFC107; 
             --chart-yellow-border: #b38600;
+
+            /* New Color for Funding */
+            --chart-green: #2E7D32; 
+            --chart-green-border: #1B5E20;
             
             --border-radius: 4px;
-            --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --font-family: Source Sans Pro Web, Helvetica Neue, Helvetica, Roboto, Arial, sans-serif;
+
             --focus-color: #005fcc;
         }
 
@@ -81,7 +86,7 @@ b;
         .combobox-list {
             position: absolute; top: 100%; left: 0; right: 0;
             background: white; border: 1px solid #ccc; border-top: none;
-            list-style: none; margin: 0; padding: 0; max-height: 300px; overflow-y: auto;
+            list-style: none; margin: 0; padding: 0; max-height: 500px; overflow-y: auto;
             z-index: 100; display: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         .combobox-wrapper[data-expanded="true"] .combobox-list { display: block; }
@@ -155,7 +160,7 @@ b;
             margin-bottom: 15px;
             display: block;
         }
-        .summary-text { white-space: pre-wrap; margin-bottom: 20px; line-height: 1.6; }
+        .summary-text { white-space: pre-wrap; margin-bottom: 20px; line-height: 1.6; max-width: 100%;}
         .note { font-style: italic; color: #555; font-size: 0.9rem; }
 
         /* Cards Column */
@@ -183,7 +188,7 @@ b;
         }
 
         /* --- Timeline --- */
-        .timeline-container { position: relative; margin-bottom: 40px; padding: 20px; background: white; border-radius: 4px; }
+        .timeline-container { position: relative; margin-bottom: 24px; padding: 20px; background: white; border-radius: 4px; }
         
         .timeline-years { 
             display: flex; 
@@ -197,7 +202,7 @@ b;
         /* Dotted Lines */
         .year-marker { position: absolute; top: 25px; bottom: -10px; border-left: 1px dotted #ccc; z-index: 0; }
 
-        .timeline-bar-track { position: relative; height: 40px; background: transparent; width: 100%; z-index: 1; margin-bottom: 20px; }
+        .timeline-bar-track { position: relative; height: 40px; background: #f3f3f3; width: 100%; z-index: 1; margin-bottom: 20px; }
         
         .phase-bar {
             position: absolute; height: 100%; top: 0; cursor: pointer; transition: opacity 0.2s;
@@ -210,9 +215,11 @@ b;
         .phase-om { background-color: var(--light-blue); }
 
         /* Legend */
-        .legend { display: flex; justify-content: center; gap: 20px; font-size: 0.85rem; color: #444; flex-wrap: wrap; margin-bottom: 20px;}
-        .legend-item { display: flex; align-items: center; gap: 8px; }
+        .legend { display: flex; justify-content: center; gap: 12px; font-size: 0.85rem; color: #444; flex-wrap: wrap; margin-bottom: 20px;}
+        .legend-item { display: flex; align-items: center; gap: 8px; margin-right: 20px;}
+    
         .legend-box { width: 16px; height: 16px; }
+        .amount-spent-legend { margin-top: 48px; }
         .box-proc { background-color: var(--grey-bar); }
         .box-imp { background-color: var(--primary-blue); }
         .box-om { background-color: var(--light-blue); }
@@ -227,7 +234,7 @@ b;
         }
         .timeline-stats > div:last-child { grid-column: span 2; }
 
-        .stat-val { font-size: 1.4rem; font-weight: 700; display: block; margin-bottom: 5px; color: #111; }
+        .stat-val { font-size: 1.3rem; font-weight: 700; display: block; margin-bottom: -4px; color: #111; }
         .stat-label { font-size: 0.85rem; color: #777; font-weight: 700; }
 
         /* --- Finance Card --- */
@@ -243,8 +250,8 @@ b;
             text-align: center;
             width: 100%;
         }
-        .eac-val { font-size: 1.5rem; font-weight: 800; color: #333; margin-bottom: 5px; }
-        .eac-label { font-size: 0.85rem; color: #777; font-weight: 700; line-height: 1.2; display: block; max-width: 150px; margin: 0 auto;}
+        .eac-val { font-size: 1.5rem; font-weight: 800; margin-bottom: 5px; }
+        .eac-label { font-size: 0.85rem; color: #777; font-weight: 700; line-height: 1.2; display: block; margin: 0 auto;}
 
         .bar-chart-wrapper-outer { background: white; padding: 20px; border-radius: 4px;
  }
@@ -253,8 +260,8 @@ b;
         .chart-wrapper-inner { flex-grow: 1; display: flex; flex-direction: column; width: 100%; background: white; padding: 40px 20px 20px 20px; }
 
         .chart-container {
-            display: flex; align-items: flex-end; justify-content: center; height: 180px; gap: 20px;
-            position: relative; padding-bottom: 30px; padding-top: 25px;
+            display: flex; align-items: flex-end; justify-content: center; height: 150px; gap: 20px;
+            position: relative; 
             border-bottom: 1px solid #eee; width: 100%;
         }
         
@@ -263,7 +270,7 @@ b;
 
         .fy-group { display: flex; align-items: flex-end; gap: 8px; position: relative; z-index: 1; height: 100%;  }
         .fy-previous { margin-right: 32px; }
-        .fy-label { position: absolute; bottom: -30px; left: 0; right: 0; text-align: center; font-weight: 700; font-size: 0.8rem; color: #111; }
+        .fy-label { position: absolute; bottom: -28px; left: 0; right: 0; text-align: center; font-weight: 700; font-size: 0.8rem; color: #111; }
 
         .bar {
             width: 45px; transition: all 0.2s ease; position: relative; display: flex; justify-content: center; cursor: pointer;
@@ -271,14 +278,19 @@ b;
         .bar:hover { opacity: 0.9; }
         
         .bar-value-label {
-            position: absolute; bottom: 5px;
+            position: absolute; 
+            /* bottom: 5px; switch to top so colors can be consistent */
+            top: -1.15rem;
             font-size: 0.75rem; font-weight: 700; color: #111;
             z-index: 2;
         }
-        .bar-actual .bar-value-label { color: #cccccc; }
+        .bar-actual .bar-value-label, .bar-funding .bar-value-label {
+            /* color: #cccccc;  doesn't need change if on top */
+        }
 
         .bar-forecast { background-color: var(--chart-yellow); }
         .bar-actual { background-color: var(--primary-blue); }
+        .bar-funding { background-color: var(--chart-green); }
 
         .chart-legend {
             margin-top: 15px; display: flex; flex-direction: column; align-items: flex-end; gap: 5px; font-size: 0.8rem; color: #333; padding-left: 16px;
@@ -287,7 +299,7 @@ b;
         .legend-square { width: 12px; height: 12px; display: inline-block; }
         .sq-y { background: var(--chart-yellow); }
         .sq-b { background: var(--primary-blue); }
-
+        .sq-g { background: var(--chart-green); }
         /* Tooltip */
         .tooltip {
             position: absolute; background-color: #333; color: #fff; padding: 8px 12px; border-radius: 4px;
@@ -331,16 +343,21 @@ b;
                 justify-content: space-between;
             }
             .eac-display {
-                width: 25%;
+                width: 30%;
                 text-align: center;
                 padding-top: 0;
             }
             .chart-wrapper-inner {
-                width: 70%;
+                width: 60%;
+            }
+
+            .card-title-amount-spent {
+                margin-bottom: -2rem;
             }
         }
         
     </style>
+    <link rel="stylesheet" media="all" href="https://cdn.maryland.gov/mdwds/0.32.0/css/mdwds.min.css" />
 </head>
 
 <body>
@@ -413,7 +430,7 @@ b;
                     
                     <div class="card">
                         <div class="card-inner">
-                            <h2 class="card-title">Current schedule</h2>
+                            <h2 class="card-title">Current Schedule</h2>
                             
                             <div class="timeline-container" role="img" aria-label="Project Schedule Chart">
                                 <div class="timeline-years" aria-hidden="true">
@@ -447,7 +464,7 @@ b;
 
                     <div class="card">
                         <div class="card-inner">
-                            <h2 class="card-title">Amount Spent</h2>
+                            <h2 class="card-title card-title-amount-spent">Amount Spent</h2>
                             
                             <div class="finance-wrapper">
                                 <div class="eac-display">
@@ -468,17 +485,29 @@ b;
                                             </div>
                                             <div class="fy-group">
                                                 <div class="bar bar-forecast" id="bar26F"></div>
-                                                <div class="bar bar-actual" id="bar26A" style="display:none;"></div>
+                                                <div class="bar bar-funding" id="bar26Fund"></div>
+                                                <!-- <div class="bar bar-actual" id="bar26A" style="display:none;"></div> -->
                                                 <div class="fy-label" aria-hidden="true">FY26</div>
                                             </div>
+
+                                            
                                         </div>
+
+                                        <!-- NOTE TO BEN: fix this legend! -->
                                         
-                                        <div class="chart-legend" aria-hidden="true">
+                                       
+                                </div>
+
+                                 <div class="legend amount-spent-legend" aria-hidden="true">
+                                            <div class="legend-item"><span class="legend-square sq-y"></span> Forecasted Spend</div>
+                                            <div class="legend-item"><span class="legend-square sq-b"></span> Actual Spend</div>
+                                            <div class="legend-item"><span class="legend-square sq-g"></span> Appropriation</div>
+                                 </div>
+                                        <!-- <div class="chart-legend" aria-hidden="true">
                                             <div class="legend-row"><span class="legend-square sq-y"></span> Forecasted Spend</div>
                                             <div class="legend-row"><span class="legend-square sq-b"></span> Actual Spend</div>
-                                        </div>
-                                    </div>
-                                </div>
+                                            <div class="legend-row"><span class="legend-square sq-g"></span> Appropriation for FY26</div>
+                                       </div> -->
                             </div>
                         </div>
                     </div>
@@ -2196,9 +2225,11 @@ b;
         const v25F = parseCurrency(p["FY25 Forecasted Spend"]);
         const v25A = parseCurrency(p["FY25 Actual Spend"]);
         const v26F = parseCurrency(p["FY26 Forecasted Spend"]);
+        const v26Fund = parseCurrency(p["FY26 Project Funding"]); // Get funding value
+
         const v26A = 0; 
 
-        let maxVal = Math.max(v25F, v25A, v26F, v26A);
+        let maxVal = Math.max(v25F, v25A, v26F, v26A, v26Fund); // Include funding in max calculation
         if(maxVal === 0) maxVal = 100;
         const scaleMax = maxVal * 1.2;
 
@@ -2248,6 +2279,7 @@ b;
         
         setBar('bar25F', v25F, p["FY25 Forecasted Spend"], "FY25 Forecasted Spend");
         setBar('bar25A', v25A, p["FY25 Actual Spend"], "FY25 Actual Spend");
+        setBar('bar26Fund', v26Fund, p["FY26 Project Funding"], "FY26 Project Funding");
         setBar('bar26F', v26F, p["FY26 Forecasted Spend"], "FY26 Forecasted Spend");
         setBar('bar26A', v26A, "$0", "FY26 Actual Spend");
     }
