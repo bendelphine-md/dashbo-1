@@ -26,8 +26,8 @@ b;
             --chart-yellow-border: #b38600;
 
             /* New Color for Funding */
-            --chart-green: #2E7D32; 
-            --chart-green-border: #1B5E20;
+            --chart-green: #377e3b; 
+            --chart-green-border: #39573b;
             
             --border-radius: 4px;
             --font-family: Source Sans Pro Web, Helvetica Neue, Helvetica, Roboto, Arial, sans-serif;
@@ -107,9 +107,9 @@ b;
         .mitdp-id {
             color: #777;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 1rem;
             text-transform: uppercase;
-            margin-bottom: 5px;
+            margin-bottom: 0px;
             display: block;
         }
 
@@ -119,6 +119,7 @@ b;
             color: #111;
             line-height: 1.1;
             margin: 0;
+            padding-right: 20px;
         }
 
         /* Meta Grid */
@@ -130,17 +131,18 @@ b;
 
         .meta-item label {
             display: block;
-            font-size: 0.75rem;
+            font-size: 0.8em;
             color: #777;
             font-weight: 700;
             text-transform: uppercase;
-            margin-bottom: 4px;
+            margin-bottom: -2px;
         }
 
         .meta-item span {
             font-size: 1.1rem;
             font-weight: 700;
             color: #111;
+            line-height: .9rem;
         }
 
         /* --- Content Grid --- */
@@ -151,23 +153,26 @@ b;
         }
 
         /* Summary Section */
-        .summary-section { color: #222; }
+        .summary-section { 
+            color: #222;
+            margin-top: 0px;
+         }
         .section-label {
-            font-size: 0.75rem;
+            font-size: 0.9rem;
             color: #777;
             font-weight: 700;
             text-transform: uppercase;
-            margin-bottom: 15px;
+            margin-bottom: 6px;
             display: block;
         }
-        .summary-text { white-space: pre-wrap; margin-bottom: 20px; line-height: 1.6; max-width: 100%;}
+        .summary-text { white-space: pre-wrap; margin-bottom: 20px; line-height: 1.4; max-width: 100%;}
         .note { font-style: italic; color: #555; font-size: 0.9rem; }
 
         /* Cards Column */
         .cards-column {
             display: flex;
             flex-direction: column;
-            gap: 30px;
+            gap: 20px;
         }
 
         .card {
@@ -181,7 +186,7 @@ b;
         }
 
         .card-title {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 700;
             margin-bottom: 14px;
             color: #111;
@@ -316,9 +321,14 @@ b;
                 flex-direction: row;
                 justify-content: space-between;
                 align-items: flex-start;
-                margin-bottom: 50px;
+                margin-bottom: 32px;
             }
-            .header-left { margin-bottom: 0; max-width: 600px; }
+            .header-left { 
+                margin-bottom: 0; 
+                max-width: 900px; 
+         
+            }
+
             .header-right { 
                 display: flex; 
                 flex-direction: row; 
