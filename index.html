@@ -373,7 +373,6 @@ b;
 <body>
 
 <body style="display:none" id="protected-page">
-
  <script>
     (function() {
         // 2. Set your password here
@@ -2258,22 +2257,21 @@ b;
 
         const setBar = (id, val, rawString, headerLabel) => {
             const el = document.getElementById(id);
-            // FIX 3: ADDED NULL CHECK to prevent crash if element is commented out
             if (!el) return; 
 
             const pct = (val / scaleMax) * 100;
             el.style.height = pct + '%';
             
             el.innerHTML = '';
-            if (val > 0) {
-                const label = document.createElement('div');
-                label.className = 'bar-value-label';
-                label.textContent = fmtDecimal(val);
-                el.appendChild(label);
-            }
             
-            if(val === 0) el.style.display = 'none';
-            else el.style.display = 'flex';
+            // CHANGED: Always add label, even if val is 0
+            const label = document.createElement('div');
+            label.className = 'bar-value-label';
+            label.textContent = fmtDecimal(val);
+            el.appendChild(label);
+            
+            // CHANGED: Always show element, even if val is 0
+            el.style.display = 'flex';
 
             let tooltipText = rawString;
             if(!tooltipText || tooltipText === "0" || tooltipText === "$0") {
@@ -2302,7 +2300,7 @@ b;
         
         setBar('bar25F', v25F, p["FY25 Forecasted Spend"], "FY25 Forecasted Spend");
         setBar('bar25A', v25A, p["FY25 Actual Spend"], "FY25 Actual Spend");
-        setBar('bar26Fund', v26Fund, p["FY26 Project Funding"], "FY26 Project Funding");
+        setBar('bar26Fund', v26Fund, p["FY26 Allocation"], "FY26 Allocation");
         setBar('bar26F', v26F, p["FY26 Forecasted Spend"], "FY26 Forecasted Spend");
         setBar('bar26A', v26A, "$0", "FY26 Actual Spend");
     }
