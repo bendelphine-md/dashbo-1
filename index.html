@@ -7,27 +7,33 @@
     <style>
         :root {
             --bg-color: #FFF; 
-            --text-dark: #111111; 
-            --text-meta: #666666;
+            --text-dark: #1b1b1b; 
+            --text-meta: #3d4551;
             --card-bg: #f1f1f1;
 b;
             
             /* Chart Colors */
-            --primary-blue: #2B5BA7; 
-            --primary-blue-border: #1a3a6c;
+            --primary-blue: #005EA2; 
+            --primary-blue-border: #005EA2;
             
-            --light-blue: #BDD4F9;    
-            --light-blue-border: #8fafe0;
+            --light-blue: #97D4EA;    
+            --light-blue-border: #97D4EA;
             
-            --grey-bar: #777781;      
-            --grey-bar-border: #808080;
+            --grey-bar: #A9AEB1;      
+            --grey-bar-border: #A9AEB1;
             
             --chart-yellow: #FFC107; 
             --chart-yellow-border: #b38600;
 
             /* New Color for Funding */
-            --chart-green: #377e3b; 
-            --chart-green-border: #39573b;
+          --chart-green: #97D4EA; 
+            --chart-green-border: #97D4EA;
+            
+
+            /* Header/Footer Colors */
+            --header-blue: #1a4480;
+            --gov-bar-bg: #f0f0f0;
+            --footer-text: #ffffff;
             
             --border-radius: 4px;
             --font-family: Source Sans Pro Web, Helvetica Neue, Helvetica, Roboto, Arial, sans-serif;
@@ -42,7 +48,6 @@ b;
             background-color: var(--bg-color);
             color: var(--text-dark);
             line-height: 1.5;
-            padding: 20px;
         }
 
         /* --- Accessibility --- */
@@ -57,6 +62,8 @@ b;
             max-width: 1400px;
             margin: 0 auto;
             width: 100%;
+            padding: 20px;
+
         }
 
         /* --- Top Bar (Search) --- */
@@ -67,7 +74,7 @@ b;
             margin-bottom: 40px;
         }
 
-        .combobox-wrapper { position: relative; max-width: 100%; }
+        .combobox-wrapper { position: relative; max-width: 800px; }
         .combobox-wrapper::after { content: "▼"; font-size: 0.8rem; color: #555; position: absolute; right: 20px; top: 16px; pointer-events: none; }
         
         .combobox-input {
@@ -105,7 +112,7 @@ b;
         .header-left { margin-bottom: 10px; }
 
         .mitdp-id {
-            color: #777;
+            color: var(--text-meta);
             font-weight: 700;
             font-size: 1rem;
             text-transform: uppercase;
@@ -132,7 +139,7 @@ b;
         .meta-item label {
             display: block;
             font-size: 0.8em;
-            color: #777;
+            color: var(--text-meta);
             font-weight: 700;
             text-transform: uppercase;
             margin-bottom: -2px;
@@ -154,19 +161,19 @@ b;
 
         /* Summary Section */
         .summary-section { 
-            color: #222;
+            color: #1b1b1b;
             margin-top: 0px;
          }
         .section-label {
             font-size: 0.9rem;
-            color: #777;
+            color: #1b1b1b;
             font-weight: 700;
             text-transform: uppercase;
             margin-bottom: 6px;
             display: block;
         }
         .summary-text { white-space: pre-wrap; margin-bottom: 20px; line-height: 1.4; max-width: 100%;}
-        .note { font-style: italic; color: #555; font-size: 0.9rem; }
+        .note { font-style: italic; color: #1b1b1b; font-size: .95rem; }
 
         /* Cards Column */
         .cards-column {
@@ -181,8 +188,29 @@ b;
         }
         
         .card-inner {
-            padding: 30px;
+            padding: 30px 8px;
             border-radius: var(--border-radius);
+        }
+
+        /* New style for card header with a note */
+        .card-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 0px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0; /* Removed bottom margin */
+            color: #111;
+        }
+
+        .schedule-note {
+            font-size: 0.95rem;
+            font-style: italic;
+            
         }
 
         .card-title {
@@ -190,6 +218,21 @@ b;
             font-weight: 700;
             margin-bottom: 14px;
             color: #111;
+            margin-left: 12px;
+        }
+
+        .card-title-schedule {
+            max-width: 50%;
+            display: block;
+        }
+
+        .info-text-calendar-years {
+            font-size: .9rem;
+            display: block;
+            text-align: right;
+            
+           
+            max-width: 49%;
         }
 
         /* --- Timeline --- */
@@ -198,8 +241,8 @@ b;
         .timeline-years { 
             display: flex; 
             justify-content: space-between; 
-            font-size: 0.75rem; 
-            color: #555; 
+            font-size: 0.95rem; 
+            color: var(--text-dark); 
             margin-bottom: 10px; 
             position: relative; 
         }
@@ -220,11 +263,11 @@ b;
         .phase-om { background-color: var(--light-blue); }
 
         /* Legend */
-        .legend { display: flex; justify-content: center; gap: 12px; font-size: 0.85rem; color: #444; flex-wrap: wrap; margin-bottom: 20px;}
-        .legend-item { display: flex; align-items: center; gap: 8px; margin-right: 20px;}
+        .legend { display: flex; justify-content: center; gap: 12px; font-size: 0.95rem; color: var(--text-dark); flex-wrap: wrap; margin-bottom: 8px; padding-top: 4px;}
+        .legend-item { display: flex; align-items: center; gap: 8px; margin-right: 20px; }
     
         .legend-box { width: 16px; height: 16px; }
-        .amount-spent-legend { margin-top: 48px; }
+        .amount-spent-legend { margin-top: 44px; }
         .box-proc { background-color: var(--grey-bar); }
         .box-imp { background-color: var(--primary-blue); }
         .box-om { background-color: var(--light-blue); }
@@ -235,12 +278,12 @@ b;
             grid-template-columns: 1fr 1fr;
             text-align: center;
             gap: 20px;
-            margin-top: 30px;
+            margin-top: 24px;
         }
         .timeline-stats > div:last-child { grid-column: span 2; }
 
-        .stat-val { font-size: 1.3rem; font-weight: 700; display: block; margin-bottom: -4px; color: #111; }
-        .stat-label { font-size: 0.85rem; color: #777; font-weight: 700; }
+        .stat-val { font-size: 1.3rem; font-weight: 700; display: block; margin-top: -3px; color: #111; }
+        .stat-label { font-size: 0.9rem; color: #3d4551; font-weight: 700; }
 
         /* --- Finance Card --- */
         .finance-wrapper {
@@ -255,14 +298,18 @@ b;
             text-align: center;
             width: 100%;
         }
-        .eac-val { font-size: 1.5rem; font-weight: 800; margin-bottom: 5px; }
-        .eac-label { font-size: 0.85rem; color: #777; font-weight: 700; line-height: 1.2; display: block; margin: 0 auto;}
+        .eac-val { font-size: 1.5rem; font-weight: 800; }
+        .eac-label { font-size: 0.85rem; color: var(--text-meta); font-weight: 700; line-height: 1.2; display: block; margin: 0 auto;}
 
         .bar-chart-wrapper-outer { background: white; padding: 20px; border-radius: 4px;
  }
 
 
-        .chart-wrapper-inner { flex-grow: 1; display: flex; flex-direction: column; width: 100%; background: white; padding: 40px 20px 20px 20px; }
+        .chart-wrapper-inner { flex-grow: 1; display: flex; flex-direction: column; width: 100%;   }
+
+        .chart-wrapper-inner-box {
+            background: white; padding: 40px 20px 20px 20px;
+        }
 
         .chart-container {
             display: flex; align-items: flex-end; justify-content: center; height: 150px; gap: 20px;
@@ -273,9 +320,9 @@ b;
         .chart-grid-line { position: absolute; left: 0; right: 0; border-top: 1px dotted #ccc; z-index: 0; }
         .grid-label { position: absolute; left: 0; top: -10px; font-size: 0.7rem; color: #666; background: rgba(255,255,255,0.8); padding-right: 4px; }
 
-        .fy-group { display: flex; align-items: flex-end; gap: 8px; position: relative; z-index: 1; height: 100%;  }
+        .fy-group { display: flex; align-items: flex-end; gap: 8px; position: relative; z-index: 1; height: 100%; text-align: center; }
         .fy-previous { margin-right: 32px; }
-        .fy-label { position: absolute; bottom: -28px; left: 0; right: 0; text-align: center; font-weight: 700; font-size: 0.8rem; color: #111; }
+        .fy-label { position: absolute; bottom: -28px; left: 0; right: 0; text-align: left; font-weight: 700; font-size: 0.9rem; color: #111; min-width: 7rem;}
 
         .bar {
             width: 45px; transition: all 0.2s ease; position: relative; display: flex; justify-content: center; cursor: pointer;
@@ -286,7 +333,7 @@ b;
             position: absolute; 
             /* bottom: 5px; switch to top so colors can be consistent */
             top: -1.15rem;
-            font-size: 0.75rem; font-weight: 700; color: #111;
+            font-size: 0.9rem; font-weight: 700; color: #111;
             z-index: 2;
         }
         .bar-actual .bar-value-label, .bar-funding .bar-value-label {
@@ -308,15 +355,150 @@ b;
         /* Tooltip */
         .tooltip {
             position: absolute; background-color: #333; color: #fff; padding: 8px 12px; border-radius: 4px;
-            font-size: 0.85rem; pointer-events: none; z-index: 1000; display: none;
+            font-size: 1rem; pointer-events: none; z-index: 1000; display: none;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2); white-space: nowrap;
+            line-height: 1.4rem;
         }
         .tooltip::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #333 transparent transparent transparent; }
 
 
+        /* Spend Note Style */
+        .spend-note {
+            margin-top: 16px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            font-style: italic;
+            margin: 14px 14px 10px;
+        }
+
+        .site-header {
+            width: 100%;
+            font-family: var(--font-family);
+            background-color: var(--header-blue);
+
+        }
+
+        .usa-banner .usa-banner__header-text,
+        .usa-banner .usa-banner__additional-link {
+            font-size: .9rem;
+        }
+
+        .main-header-bar {
+            color: white;
+            padding: 16px 20px 12px;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            
+        }
+        .header-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0;
+            line-height: 1.8rem;
+        }
+        .header-meta {
+            font-size: 1rem;
+            margin-top: 14px;
+        }
+
+        .beta-badge {
+            background-color: #ffbe2e;
+            color: #000;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 8px;
+            font-size: 0.9rem;
+        }
+        .version-text { font-weight: bold; }
+        .update-text { display: block; font-size: 1rem; opacity: 0.9; margin-top: 3px; }
+        .update-link { color: white; text-decoration: underline; }
+
+
+        /* --- Footer Styles --- */
+        .site-footer {
+            background-color: var(--header-blue);
+            color: var(--footer-text);
+            padding: 30px 20px;
+            margin-top: auto;
+        }
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .footer-right {
+            font-size: 1rem;
+        }
+        .footer-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            line-height: 1.2rem;
+        }
+        .footer-text {
+            margin-bottom: 15px;
+            line-height: 1.2rem;
+            opacity: 0.9;
+        }
+        .footer-links {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .footer-link {
+            color: var(--footer-text);
+            text-decoration: underline;
+        }
+
+        .footer-left {
+            display: none;
+        }
+
+        .footer-left img {
+            height: 2.25rem;
+            width: auto;
+            display: block;
+        }
+
+        maryland-statewide-banner .usa-banner .usa-banner__header {
+            margin-bottom: -5px;
+        }
+
+        .usa-banner__header .usa-banner__inner {
+            padding: 0 20px;
+        }
+
         /* --- DESKTOP LAYOUT --- */
         @media (min-width: 992px) {
             
+            .main-header-bar {
+                display: flex;
+            }    
+
+            maryland-statewide-banner .usa-banner .usa-banner__header {
+                margin-bottom: -1px;
+            }
+        
+            .header-meta {
+            text-align: right;
+            margin-right: 4px;
+            margin-top: 0px;
+            }
+
+            .footer-left {
+            margin: 10px 0 0 20px;
+            display: block;
+            }
+
+            .footer-right {
+            max-width: 65%;
+            }
+
             .project-header {
                 flex-direction: row;
                 justify-content: space-between;
@@ -326,7 +508,11 @@ b;
             .header-left { 
                 margin-bottom: 0; 
                 max-width: 900px; 
-         
+            }
+
+            .spend-note {
+
+            margin: 14px 0 0;
             }
 
             .header-right { 
@@ -361,8 +547,16 @@ b;
                 width: 60%;
             }
 
+            .card-title {
+                margin-left: 0px;
+            }
+
             .card-title-amount-spent {
                 margin-bottom: -2rem;
+            }
+
+            .card-inner {
+                padding: 30px;
             }
         }
         
@@ -395,10 +589,38 @@ b;
     })();
 </script> 
 
-    <a href="#dashboardContent" class="skip-link">Skip to main content</a>
-    <div id="chartTooltip" class="tooltip" aria-hidden="true"></div>
 
-    <div class="dashboard-wrapper">
+
+<a href="#primary-content" class="skip-link">Skip to main content</a>
+<div id="chartTooltip" class="tooltip" aria-hidden="true"></div>
+
+<script type="module" src="https://cdn.maryland.gov/mdwds/latest/components/maryland-statewide-banner.js"></script>
+<maryland-statewide-banner>
+  <noscript>
+    <link rel="stylesheet" href="https://cdn.maryland.gov/mdwds/latest/css/mdwds.min.css">
+    <div class="maryland-alert maryland-alert--warning">
+      <div class="maryland-alert__body">
+        <h4 class="maryland-alert__heading">JavaScript Required</h4>
+        <p class="maryland-alert__text">
+          JavaScript is required to use content on this page. Please enable
+          JavaScript in your browser.
+        </p>
+      </div>
+    </div>
+  </noscript>
+</maryland-statewide-banner>
+
+    <header class="site-header">
+        <div class="main-header-bar">
+            <h1 class="header-title">State of Maryland Major IT Development Project (MITDP) Dashboard</h1>
+            <div class="header-meta">
+                <div><span class="beta-badge">BETA</span><span class="version-text">Version 0.1</span></div>
+                <span class="update-text">Updated January 22, 2026 &nbsp; <a href="https://github.com/maryland-gov/mitdp-dashboard/commits/main/" class="update-link">See changes</a></span>
+            </div>
+        </div>
+    </header>
+
+    <div id="primary-content" class="dashboard-wrapper">
         
         <div class="top-bar">
             <div class="combobox-wrapper" id="comboboxWrapper">
@@ -411,7 +633,7 @@ b;
 
         <main id="dashboardContent" style="display:none;" tabindex="-1">
             
-            <header class="project-header">
+            <section class="project-header">
                 <div class="header-left">
                     <div class="mitdp-id" id="displayId">MITDP-ID</div>
                     <h1 class="project-name" id="displayName">Project Name</h1>
@@ -426,21 +648,23 @@ b;
                         <span id="displayPhase">Phase Name</span>
                     </div>
                 </div>
-            </header>
+            </section>
 
             <div class="main-content">
                 <section class="summary-section" aria-labelledby="summary-heading">
                     <span id="summary-heading" class="section-label">Project Summary</span>
                     <div class="summary-text" id="displaySummary">Summary text...</div>
-                    <div class="note">Note: This is a summary, contact accountable agency for detailed information.</div>
+                    <div class="note"><strong>Note:</strong> This is a summary; contact accountable agency for detailed information.</div>
                 </section>
 
                 <section class="cards-column">
                     
                     <div class="card">
                         <div class="card-inner">
-                            <h2 class="card-title">Current Schedule</h2>
-                            
+                            <div class="card-header-row">
+                                <h2 class="card-title">Current schedule</h2>
+                                <span class="schedule-note">Dates shown are calendar years</span>
+                            </div> 
                             <div class="timeline-container" role="region" aria-label="Project Schedule Chart">
                                 <div class="timeline-years" aria-hidden="true">
                                     <span>2016</span><span>2018</span><span>2020</span><span>2022</span><span>2024</span><span>2026</span><span>2028</span><span>2030</span><span>2032</span>
@@ -456,16 +680,16 @@ b;
 
                             <div class="timeline-stats">
                                 <div>
-                                    <span class="stat-val" id="dispLen">12 - 14 years</span>
                                     <span class="stat-label">Estimated Project Length</span>
+                                    <span class="stat-val" id="dispLen">12 - 14 years</span>
                                 </div>
                                 <div>
-                                    <span class="stat-val" id="dispRem">1 - 2 years</span>
                                     <span class="stat-label">Estimated Time Remaining</span>
+                                    <span class="stat-val" id="dispRem">1 - 2 years</span>
                                 </div>
                                 <div>
-                                    <span class="stat-val" id="dispEnd">2028</span>
                                     <span class="stat-label">Estimated End Year</span>
+                                    <span class="stat-val" id="dispEnd">2028</span>
                                 </div>
                             </div>
                         </div>
@@ -477,54 +701,72 @@ b;
                             
                             <div class="finance-wrapper">
                                 <div class="eac-display">
-                                    <div class="eac-val" id="dispEAC">$75M - $80M</div>
                                     <span class="eac-label">Project Estimate-at-Completion</span>
+                                    <div class="eac-val" id="dispEAC">$75M - $80M</div>
+
                                 </div>
 
+                                
                                 <div class="chart-wrapper-inner">
-                                    <div style="display:flex; align-items: center;">
-                                        <div class="chart-container" id="chartContainer" role="graphics-document" aria-label="Spend Chart">
-                                            <div class="chart-grid-line" style="bottom: 100%;" aria-hidden="true"><span class="grid-label" id="gridMax">30M</span></div>
-                                            <div class="chart-grid-line" style="bottom: 50%;" aria-hidden="true"><span class="grid-label" id="gridMid">15M</span></div>
+                                    <div class="chart-wrapper-inner-box">
+                                            <div style="display:flex; align-items: center;">
+                                                <div class="chart-container" id="chartContainer" role="graphics-document" aria-label="Spend Chart">
+                                                    <div class="chart-grid-line" style="bottom: 100%;" aria-hidden="true"><span class="grid-label" id="gridMax">30M</span></div>
+                                                    <div class="chart-grid-line" style="bottom: 50%;" aria-hidden="true"><span class="grid-label" id="gridMid">15M</span></div>
 
-                                            <div class="fy-group fy-previous">
-                                                <div class="bar bar-forecast" id="bar25F"></div>
-                                                <div class="bar bar-actual" id="bar25A"></div>
-                                                <div class="fy-label" aria-hidden="true">FY25</div>
-                                            </div>
-                                            <div class="fy-group">
-                                                <div class="bar bar-forecast" id="bar26F"></div>
-                                                <div class="bar bar-funding" id="bar26Fund"></div>
-                                                <!-- <div class="bar bar-actual" id="bar26A" style="display:none;"></div> -->
-                                                <div class="fy-label" aria-hidden="true">FY26</div>
-                                            </div>
-
-                                            
+                                                    <div class="fy-group fy-previous">
+                                                        <div class="bar bar-forecast" id="bar25F"></div>
+                                                        <div class="bar bar-actual" id="bar25A"></div>
+                                                        <div class="fy-label" aria-hidden="true">Fiscal Year 2025</div>
+                                                    </div>
+                                                    <div class="fy-group">
+                                                        <div class="bar bar-forecast" id="bar26F"></div>
+                                                        <div class="bar bar-funding" id="bar26Fund"></div>
+                                                        <!-- <div class="bar bar-actual" id="bar26A" style="display:none;"></div> -->
+                                                        <div class="fy-label" aria-hidden="true">Fiscal Year 2026</div>
+                                                    </div>
+                                                </div>                                        
                                         </div>
 
-                                        <!-- NOTE TO BEN: fix this legend! -->
-                                        
-                                       
-                                </div>
-
-                                 <div class="legend amount-spent-legend" aria-hidden="true">
-                                            <div class="legend-item"><span class="legend-square sq-y"></span> Forecasted Spend</div>
-                                            <div class="legend-item"><span class="legend-square sq-b"></span> Actual Spend</div>
-                                            <div class="legend-item"><span class="legend-square sq-g"></span> Appropriation</div>
-                                 </div>
-                                        <!-- <div class="chart-legend" aria-hidden="true">
-                                            <div class="legend-row"><span class="legend-square sq-y"></span> Forecasted Spend</div>
-                                            <div class="legend-row"><span class="legend-square sq-b"></span> Actual Spend</div>
-                                            <div class="legend-row"><span class="legend-square sq-g"></span> Appropriation for FY26</div>
-                                       </div> -->
-                            </div>
+                                        <div class="legend amount-spent-legend" aria-hidden="true">
+                                                    <div class="legend-item"><span class="legend-square sq-y"></span> Forecasted Spend</div>
+                                                    <div class="legend-item"><span class="legend-square sq-b"></span> Actual Spend</div>
+                                                    <div class="legend-item"><span class="legend-square sq-g"></span> Appropriation</div>
+                                        </div>
+                                    </div>
+                                 <div class="spend-note">
+                            <strong>Note:</strong> In some cases, a project's Actual Spend may include rolled-over funding that was appropriated but not spent in previous fiscal years.
                         </div>
+                                 
+                            </div>
+                            
+                        </div>
+                        
                     </div>
 
                 </section>
             </div>
         </main>
     </div>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-left">
+                <img src="https://cdn.maryland.gov/mdwds/0.33.0/img/md_wordmark_horizontal_inverted.svg" alt="Maryland Logo">
+            </div>
+
+            <div class="footer-right">
+                <div class="footer-title">This data is compiled by the State of Maryland Department of Information Technology (DoIT), in partnership with State agencies</div>
+                <p class="footer-text">This beta dashboard launched in January 2026. DoIT will continue to update the dashboard based on user feedback and as ongoing MITDP reforms take effect.</p>
+                <div class="footer-links">
+                    <a href="https://github.com/maryland-gov/mitdp-dashboard" class="footer-link">See the source code</a> | 
+                    <a href="https://forms.gle/5cvw8wnbuKMvL5zNA" class="footer-link">Send us your feedback</a> | 
+                    <a href="https://doit.maryland.gov/MITDP-Oversight/Pages/MITDP-oversight.aspx" class="footer-link">Learn more about MITDP Oversight</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
 
 <script>
     const projects = [
@@ -533,7 +775,7 @@ b;
     "Name": "Capital Budgeting Information System (CBIS) replacement",
     "Agency": "Department of Budget and Management",
     "Phase": "O&M",
-    "Project Length": "3 - 5 years",
+    "Project Length": "3 to 5 years",
     "Project Len Min": 3,
     "Project Length Max": 5,
     "Start Year": 2022,
@@ -545,7 +787,7 @@ b;
     "Implementation End - Current": "12/31/2025",
     "O&M Start - Current": "1/1/2026",
     "O&M End - Current": "3/31/2027",
-    "EAC": "$0M - $10M",
+    "EAC": "$0M to $10M",
     "FY25 Forecasted Spend": "$1,639,972.54",
     "FY25 Actual Spend": "$1,627,244",
     "FY26 Project Funding": "$0",
@@ -557,7 +799,7 @@ b;
     "Name": "CPB Payroll System Modernization (PSM)",
     "Agency": "Comptroller of Maryland",
     "Phase": "Implementation",
-    "Project Length": "5 - 7 years",
+    "Project Length": "5 to 7 years",
     "Project Len Min": 5,
     "Project Length Max": 7,
     "Start Year": 2021,
@@ -569,7 +811,7 @@ b;
     "Implementation End - Current": "7/1/2026",
     "O&M Start - Current": "7/2/2026",
     "O&M End - Current": "9/30/2027",
-    "EAC": "$40M - $50M",
+    "EAC": "$40M to $50M",
     "FY25 Forecasted Spend": "$17,780,793.58",
     "FY25 Actual Spend": "$16,593,911",
     "FY26 Project Funding": "$19,007,550",
@@ -581,7 +823,7 @@ b;
     "Name": "OPER - Systems Integration and Modernization",
     "Agency": "Maryland Department of Health",
     "Phase": "Implementation",
-    "Project Length": "4 - 6 years",
+    "Project Length": "4 to 6 years",
     "Project Len Min": 4,
     "Project Length Max": 6,
     "Start Year": 2022,
@@ -593,7 +835,7 @@ b;
     "Implementation End - Current": "9/30/2026",
     "O&M Start - Current": "10/1/2026",
     "O&M End - Current": "12/31/2027",
-    "EAC": "$0M - $10M",
+    "EAC": "$0M to $10M",
     "FY25 Forecasted Spend": "$4,204.68",
     "FY25 Actual Spend": "$4,205",
     "FY26 Project Funding": "$2,356,598",
@@ -605,7 +847,7 @@ b;
     "Name": "MMT - Dental Administrative Services (DASO)",
     "Agency": "Maryland Department of Health",
     "Phase": "O&M",
-    "Project Length": "8 - 10 years",
+    "Project Length": "8 to 10 years",
     "Project Len Min": 8,
     "Project Length Max": 10,
     "Start Year": 2018,
@@ -617,7 +859,7 @@ b;
     "Implementation End - Current": "12/31/2025",
     "O&M Start - Current": "1/1/2026",
     "O&M End - Current": "3/31/2027",
-    "EAC": "$30M - $40M",
+    "EAC": "$30M to $40M",
     "FY25 Forecasted Spend": "$2,114,690.32",
     "FY25 Actual Spend": "$1,682,960",
     "FY26 Project Funding": "$17,339,778",
@@ -629,7 +871,7 @@ b;
     "Name": "LABOR Omni-channel Contact Center System (LOCCS)",
     "Agency": "Department of Labor",
     "Phase": "Implementation",
-    "Project Length": "5 - 7 years",
+    "Project Length": "5 to 7 years",
     "Project Len Min": 5,
     "Project Length Max": 7,
     "Start Year": 2021,
@@ -641,7 +883,7 @@ b;
     "Implementation End - Current": "6/30/2026",
     "O&M Start - Current": "7/1/2026",
     "O&M End - Current": "6/30/2027",
-    "EAC": "$10M - $20M",
+    "EAC": "$10M to $20M",
     "FY25 Forecasted Spend": "$635,516.31",
     "FY25 Actual Spend": "$0",
     "FY26 Project Funding": "$7,009,198",
@@ -653,7 +895,7 @@ b;
     "Name": "New Unified Financial Aid System for Higher Education ( or MDCAPS 2.0)",
     "Agency": "Maryland Higher Education Commission",
     "Phase": "Implementation",
-    "Project Length": "4 - 6 years",
+    "Project Length": "4 to 6 years",
     "Project Len Min": 4,
     "Project Length Max": 6,
     "Start Year": 2022,
@@ -665,7 +907,7 @@ b;
     "Implementation End - Current": "9/18/2026",
     "O&M Start - Current": "9/21/2026",
     "O&M End - Current": "12/18/2027",
-    "EAC": "$10M - $20M",
+    "EAC": "$10M to $20M",
     "FY25 Forecasted Spend": "$743,327.58",
     "FY25 Actual Spend": "$731,972",
     "FY26 Project Funding": "$3,071,111",
@@ -677,7 +919,7 @@ b;
     "Name": "Campaign Reporting Information System (CRIS)",
     "Agency": "Maryland State Board of Elections",
     "Phase": "O&M",
-    "Project Length": "3 - 5 years",
+    "Project Length": "3 to 5 years",
     "Project Len Min": 3,
     "Project Length Max": 5,
     "Start Year": 2023,
@@ -689,7 +931,7 @@ b;
     "Implementation End - Current": "11/30/2025",
     "O&M Start - Current": "12/1/2025",
     "O&M End - Current": "12/31/2026",
-    "EAC": "$0M - $10M",
+    "EAC": "$0M to $10M",
     "FY25 Forecasted Spend": "$924,021.94",
     "FY25 Actual Spend": "$1,033,093",
     "FY26 Project Funding": "$521,626",
@@ -701,7 +943,7 @@ b;
     "Name": "Financial Systems Modernization",
     "Agency": "State Treasurer's Office",
     "Phase": "Implementation",
-    "Project Length": "9 - 11 years",
+    "Project Length": "9 to 11 years",
     "Project Len Min": 9,
     "Project Length Max": 11,
     "Start Year": 2017,
@@ -713,7 +955,7 @@ b;
     "Implementation End - Current": "6/30/2026",
     "O&M Start - Current": "7/1/2026",
     "O&M End - Current": "6/30/2027",
-    "EAC": "$30M - $40M",
+    "EAC": "$30M to $40M",
     "FY25 Forecasted Spend": "$5,560,323.28",
     "FY25 Actual Spend": "$6,398,733",
     "FY26 Project Funding": "$6,199,456",
@@ -725,7 +967,7 @@ b;
     "Name": "Maryland Marketplace (eMMA) eProcurement Solution",
     "Agency": "Department of General Services",
     "Phase": "Implementation",
-    "Project Length": "10 - 12 years",
+    "Project Length": "10 to 12 years",
     "Project Len Min": 10,
     "Project Length Max": 12,
     "Start Year": 2017,
@@ -737,7 +979,7 @@ b;
     "Implementation End - Current": "12/31/2027",
     "O&M Start - Current": "1/1/2028",
     "O&M End - Current": "12/31/2028",
-    "EAC": "$70M - $80M",
+    "EAC": "$70M to $80M",
     "FY25 Forecasted Spend": "$3,239,585.29",
     "FY25 Actual Spend": "$2,771,967",
     "FY26 Project Funding": "$5,353,724",
@@ -749,7 +991,7 @@ b;
     "Name": "Fleet Management System Replacement",
     "Agency": "Department of Budget and Management",
     "Phase": "Implementation",
-    "Project Length": "6 - 8 years",
+    "Project Length": "6 to 8 years",
     "Project Len Min": 6,
     "Project Length Max": 8,
     "Start Year": 2021,
@@ -761,7 +1003,7 @@ b;
     "Implementation End - Current": "3/31/2026",
     "O&M Start - Current": "4/1/2026",
     "O&M End - Current": "6/29/2027",
-    "EAC": "$0M - $10M",
+    "EAC": "$0M to $10M",
     "FY25 Forecasted Spend": "$200,000.00",
     "FY25 Actual Spend": "$0",
     "FY26 Project Funding": "$1,250,000",
@@ -773,7 +1015,7 @@ b;
     "Name": "DNR Modernization and OneStop Integration Project",
     "Agency": "Department of Natural Resources",
     "Phase": "Implementation",
-    "Project Length": "8 - 10 years",
+    "Project Length": "8 to 10 years",
     "Project Len Min": 8,
     "Project Length Max": 10,
     "Start Year": 2019,
@@ -785,7 +1027,7 @@ b;
     "Implementation End - Current": "3/1/2026",
     "O&M Start - Current": "3/1/2026",
     "O&M End - Current": "6/1/2027",
-    "EAC": "$20M - $30M",
+    "EAC": "$20M to $30M",
     "FY25 Forecasted Spend": "$1,388,000.00",
     "FY25 Actual Spend": "$166,800",
     "FY26 Project Funding": "$0",
@@ -797,7 +1039,7 @@ b;
     "Name": "MDE Portal Project",
     "Agency": "Department of the Environment",
     "Phase": "Implementation",
-    "Project Length": "3 - 5 years",
+    "Project Length": "3 to 5 years",
     "Project Len Min": 3,
     "Project Length Max": 5,
     "Start Year": 2024,
@@ -809,7 +1051,7 @@ b;
     "Implementation End - Current": "3/1/2027",
     "O&M Start - Current": "3/2/2027",
     "O&M End - Current": "5/31/2028",
-    "EAC": "$0M - $10M",
+    "EAC": "$0M to $10M",
     "FY25 Forecasted Spend": "$287,957.32",
     "FY25 Actual Spend": "$275,078",
     "FY26 Project Funding": "$2,000,000",
@@ -821,7 +1063,7 @@ b;
     "Name": "Wells and Septic Portal",
     "Agency": "Department of the Environment",
     "Phase": "Implementation",
-    "Project Length": "3 - 5 years",
+    "Project Length": "3 to 5 years",
     "Project Len Min": 3,
     "Project Length Max": 5,
     "Start Year": 2024,
@@ -833,7 +1075,7 @@ b;
     "Implementation End - Current": "8/31/2027",
     "O&M Start - Current": "9/1/2027",
     "O&M End - Current": "11/30/2028",
-    "EAC": "$0M - $10M",
+    "EAC": "$0M to $10M",
     "FY25 Forecasted Spend": "$200,000.00",
     "FY25 Actual Spend": "$0",
     "FY26 Project Funding": "$1,050,000",
@@ -845,7 +1087,7 @@ b;
     "Name": "Statewide Electronic Health Records (EHR) system",
     "Agency": "Maryland Department of Health",
     "Phase": "Implementation",
-    "Project Length": "6 - 8 years",
+    "Project Length": "6 to 8 years",
     "Project Len Min": 6,
     "Project Length Max": 8,
     "Start Year": 2021,
@@ -857,7 +1099,7 @@ b;
     "Implementation End - Current": "12/31/2026",
     "O&M Start - Current": "1/1/2027",
     "O&M End - Current": "3/31/2028",
-    "EAC": "$30M - $40M",
+    "EAC": "$30M to $40M",
     "FY25 Forecasted Spend": "$6,276,198.99",
     "FY25 Actual Spend": "$5,852,884",
     "FY26 Project Funding": "$1,262,665",
@@ -869,7 +1111,7 @@ b;
     "Name": "Enterprise Licensing and Regulatory Management Solution (LRMS)",
     "Agency": "Maryland Department of Health",
     "Phase": "Implementation",
-    "Project Length": "4 - 6 years",
+    "Project Length": "4 to 6 years",
     "Project Len Min": 4,
     "Project Length Max": 6,
     "Start Year": 2023,
@@ -881,7 +1123,7 @@ b;
     "Implementation End - Current": "9/30/2026",
     "O&M Start - Current": "10/1/2026",
     "O&M End - Current": "12/30/2027",
-    "EAC": "$10M - $20M",
+    "EAC": "$10M to $20M",
     "FY25 Forecasted Spend": "$193,832.32",
     "FY25 Actual Spend": "$226,672",
     "FY26 Project Funding": "$1,714,229",
@@ -893,7 +1135,7 @@ b;
     "Name": "Migrate MDH HQ Data Center to the Cloud",
     "Agency": "Maryland Department of Health",
     "Phase": "Implementation",
-    "Project Length": "8 - 10 years",
+    "Project Length": "8 to 10 years",
     "Project Len Min": 8,
     "Project Length Max": 10,
     "Start Year": 2019,
@@ -905,7 +1147,7 @@ b;
     "Implementation End - Current": "3/31/2026",
     "O&M Start - Current": "4/1/2026",
     "O&M End - Current": "6/30/2026",
-    "EAC": "$10M - $20M",
+    "EAC": "$10M to $20M",
     "FY25 Forecasted Spend": "$497,226.47",
     "FY25 Actual Spend": "$578,099",
     "FY26 Project Funding": "$0",
@@ -917,7 +1159,7 @@ b;
     "Name": "Bed Registry and Referral System",
     "Agency": "Maryland Department of Health",
     "Phase": "Implementation",
-    "Project Length": "6 - 8 years",
+    "Project Length": "6 to 8 years",
     "Project Len Min": 6,
     "Project Length Max": 8,
     "Start Year": 2021,
@@ -929,7 +1171,7 @@ b;
     "Implementation End - Current": "7/31/2027",
     "O&M Start - Current": "8/1/2027",
     "O&M End - Current": "11/1/2028",
-    "EAC": "$10M - $20M",
+    "EAC": "$10M to $20M",
     "FY25 Forecasted Spend": "$216,110.20",
     "FY25 Actual Spend": "$131,252",
     "FY26 Project Funding": "$0",
@@ -941,7 +1183,7 @@ b;
     "Name": "MIA's Insurance Tracking System (ITS)",
     "Agency": "Maryland Insurance Administration",
     "Phase": "Implementation",
-    "Project Length": "7 - 9 years",
+    "Project Length": "7 to 9 years",
     "Project Len Min": 7,
     "Project Length Max": 9,
     "Start Year": 2020,
@@ -953,7 +1195,7 @@ b;
     "Implementation End - Current": "3/30/2027",
     "O&M Start - Current": "4/1/2027",
     "O&M End - Current": "3/30/2028",
-    "EAC": "$30M - $40M",
+    "EAC": "$30M to $40M",
     "FY25 Forecasted Spend": "$8,674,968.16",
     "FY25 Actual Spend": "$10,699,896",
     "FY26 Project Funding": "$7,623,877",
@@ -965,7 +1207,7 @@ b;
     "Name": "CCATS Migration Project",
     "Agency": "Department of Education",
     "Phase": "Implementation",
-    "Project Length": "7 - 9 years",
+    "Project Length": "7 to 9 years",
     "Project Len Min": 7,
     "Project Length Max": 9,
     "Start Year": 2020,
@@ -977,7 +1219,7 @@ b;
     "Implementation End - Current": "1/31/2026",
     "O&M Start - Current": "2/1/2026",
     "O&M End - Current": "4/30/2027",
-    "EAC": "$30M - $40M",
+    "EAC": "$30M to $40M",
     "FY25 Forecasted Spend": "$13,418,447.00",
     "FY25 Actual Spend": "$6,850,201",
     "FY26 Project Funding": "$2,678,167",
@@ -989,7 +1231,7 @@ b;
     "Name": "MMT - Surveillance Utilization Review Subsystem",
     "Agency": "Maryland Department of Health",
     "Phase": "Implementation",
-    "Project Length": "9 - 11 years",
+    "Project Length": "9 to 11 years",
     "Project Len Min": 9,
     "Project Length Max": 11,
     "Start Year": 2018,
@@ -1001,7 +1243,7 @@ b;
     "Implementation End - Current": "12/31/2026",
     "O&M Start - Current": "1/1/2027",
     "O&M End - Current": "3/31/2028",
-    "EAC": "$10M - $20M",
+    "EAC": "$10M to $20M",
     "FY25 Forecasted Spend": "$1,984,586.28",
     "FY25 Actual Spend": "$1,626,638",
     "FY26 Project Funding": "$5,249,461",
@@ -1013,7 +1255,7 @@ b;
     "Name": "Integrated Tax System",
     "Agency": "Comptroller of Maryland",
     "Phase": "Implementation",
-    "Project Length": "13 - 15 years",
+    "Project Length": "13 to 15 years",
     "Project Len Min": 13,
     "Project Length Max": 15,
     "Start Year": 2015,
@@ -1025,7 +1267,7 @@ b;
     "Implementation End - Current": "12/31/2026",
     "O&M Start - Current": "1/1/2027",
     "O&M End - Current": "12/30/2027",
-    "EAC": "$200M - $225M",
+    "EAC": "$200M to $225M",
     "FY25 Forecasted Spend": "$25,543,684.39",
     "FY25 Actual Spend": "$25,368,461",
     "FY26 Project Funding": "$25,781,517",
@@ -1037,7 +1279,7 @@ b;
     "Name": "Park Reservation and Revenue Management System (PRRMS)",
     "Agency": "Department of Natural Resources",
     "Phase": "Implementation",
-    "Project Length": "5 - 7 years",
+    "Project Length": "5 to 7 years",
     "Project Len Min": 5,
     "Project Length Max": 7,
     "Start Year": 2023,
@@ -1049,7 +1291,7 @@ b;
     "Implementation End - Current": "6/30/2028",
     "O&M Start - Current": "7/1/2028",
     "O&M End - Current": "6/30/2029",
-    "EAC": "$0M - $10M",
+    "EAC": "$0M to $10M",
     "FY25 Forecasted Spend": "$0.00",
     "FY25 Actual Spend": "$0",
     "FY26 Project Funding": "$0",
@@ -1061,7 +1303,7 @@ b;
     "Name": "NwMD Modernization",
     "Agency": "Department of Information Technology",
     "Phase": "Implementation",
-    "Project Length": "5 - 7 years",
+    "Project Length": "5 to 7 years",
     "Project Len Min": 5,
     "Project Length Max": 7,
     "Start Year": 2023,
@@ -1073,7 +1315,7 @@ b;
     "Implementation End - Current": "5/31/2026",
     "O&M Start - Current": "6/1/2026",
     "O&M End - Current": "6/30/2026",
-    "EAC": "$10M - $20M",
+    "EAC": "$10M to $20M",
     "FY25 Forecasted Spend": "$5,014,940.75",
     "FY25 Actual Spend": "$4,824,556",
     "FY26 Project Funding": "$0",
@@ -1085,7 +1327,7 @@ b;
     "Name": "MMT - Business Process Reengineering & Consolidated CRM",
     "Agency": "Maryland Department of Health",
     "Phase": "Implementation",
-    "Project Length": "10 - 12 years",
+    "Project Length": "10 to 12 years",
     "Project Len Min": 10,
     "Project Length Max": 12,
     "Start Year": 2018,
@@ -1097,7 +1339,7 @@ b;
     "Implementation End - Current": "12/31/2028",
     "O&M Start - Current": "1/1/2029",
     "O&M End - Current": "3/31/2030",
-    "EAC": "$40M - $50M",
+    "EAC": "$40M to $50M",
     "FY25 Forecasted Spend": "$13,736,221.09",
     "FY25 Actual Spend": "$9,279,782",
     "FY26 Project Funding": "$7,619,077",
@@ -1109,7 +1351,7 @@ b;
     "Name": "Electronic Licensing Modernization (ELMo)",
     "Agency": "Department of Labor",
     "Phase": "Implementation",
-    "Project Length": "3 - 5 years",
+    "Project Length": "3 to 5 years",
     "Project Len Min": 3,
     "Project Length Max": 5,
     "Start Year": 2025,
@@ -1121,7 +1363,7 @@ b;
     "Implementation End - Current": "3/31/2027",
     "O&M Start - Current": "3/31/2027",
     "O&M End - Current": "6/30/2027",
-    "EAC": "$10M - $20M",
+    "EAC": "$10M to $20M",
     "FY25 Forecasted Spend": "$830,000.00",
     "FY25 Actual Spend": "$22,098",
     "FY26 Project Funding": "$1,300,000",
@@ -1133,7 +1375,7 @@ b;
     "Name": "Family and Medical Leave Insurance (FAMLI)",
     "Agency": "Department of Labor",
     "Phase": "Implementation",
-    "Project Length": "5 - 7 years",
+    "Project Length": "5 to 7 years",
     "Project Len Min": 5,
     "Project Length Max": 7,
     "Start Year": 2023,
@@ -1145,7 +1387,7 @@ b;
     "Implementation End - Current": "6/30/2028",
     "O&M Start - Current": "7/1/2028",
     "O&M End - Current": "6/30/2029",
-    "EAC": "$60M - $70M",
+    "EAC": "$60M to $70M",
     "FY25 Forecasted Spend": "$0.00",
     "FY25 Actual Spend": "$0",
     "FY26 Project Funding": "$0",
@@ -1157,7 +1399,7 @@ b;
     "Name": "MMT - EDI Gateway",
     "Agency": "Maryland Department of Health",
     "Phase": "Procurement",
-    "Project Length": "4 - 6 years",
+    "Project Length": "4 to 6 years",
     "Project Len Min": 4,
     "Project Length Max": 6,
     "Start Year": 2024,
@@ -1169,7 +1411,7 @@ b;
     "Implementation End - Current": "12/31/2027",
     "O&M Start - Current": "1/1/2028",
     "O&M End - Current": "3/31/2029",
-    "EAC": "$10M - $20M",
+    "EAC": "$10M to $20M",
     "FY25 Forecasted Spend": "$1,811,883.97",
     "FY25 Actual Spend": "$1,349,146",
     "FY26 Project Funding": "$4,616,128",
@@ -1181,7 +1423,7 @@ b;
     "Name": "PHS Data Modernization Program",
     "Agency": "Maryland Department of Health",
     "Phase": "Procurement",
-    "Project Length": "4 - 6 years",
+    "Project Length": "4 to 6 years",
     "Project Len Min": 4,
     "Project Length Max": 6,
     "Start Year": 2024,
@@ -1193,7 +1435,7 @@ b;
     "Implementation End - Current": "12/29/2028",
     "O&M Start - Current": "12/30/2028",
     "O&M End - Current": "3/28/2030",
-    "EAC": "$10M - $20M",
+    "EAC": "$10M to $20M",
     "FY25 Forecasted Spend": "$0.00",
     "FY25 Actual Spend": "$0",
     "FY26 Project Funding": "$0",
@@ -1205,7 +1447,7 @@ b;
     "Name": "MMT - Consolidated Call Center and IVR",
     "Agency": "Maryland Department of Health",
     "Phase": "Procurement",
-    "Project Length": "3 - 5 years",
+    "Project Length": "3 to 5 years",
     "Project Len Min": 3,
     "Project Length Max": 5,
     "Start Year": 2025,
@@ -1217,7 +1459,7 @@ b;
     "Implementation End - Current": "3/31/2028",
     "O&M Start - Current": "4/1/2028",
     "O&M End - Current": "6/30/2029",
-    "EAC": "$10M - $20M",
+    "EAC": "$10M to $20M",
     "FY25 Forecasted Spend": "$56,861.76",
     "FY25 Actual Spend": "$37,286",
     "FY26 Project Funding": "$3,725,518",
@@ -1229,7 +1471,7 @@ b;
     "Name": "MMT - Enterprise Document Management System",
     "Agency": "Maryland Department of Health",
     "Phase": "Procurement",
-    "Project Length": "3 - 5 years",
+    "Project Length": "3 to 5 years",
     "Project Len Min": 3,
     "Project Length Max": 5,
     "Start Year": 2025,
@@ -1241,7 +1483,7 @@ b;
     "Implementation End - Current": "12/31/2027",
     "O&M Start - Current": "1/1/2028",
     "O&M End - Current": "3/31/2029",
-    "EAC": "$10M - $20M",
+    "EAC": "$10M to $20M",
     "FY25 Forecasted Spend": "$19,024.00",
     "FY25 Actual Spend": "$19,024",
     "FY26 Project Funding": "$3,613,681",
@@ -1253,7 +1495,7 @@ b;
     "Name": "MSDE Website",
     "Agency": "Department of Education",
     "Phase": "Planning",
-    "Project Length": "5 - 7 years",
+    "Project Length": "5 to 7 years",
     "Project Len Min": 5,
     "Project Length Max": 7,
     "Start Year": 2023,
@@ -1265,7 +1507,7 @@ b;
     "Implementation End - Current": "11/30/2027",
     "O&M Start - Current": "12/1/2027",
     "O&M End - Current": "3/31/2029",
-    "EAC": "$0M - $10M",
+    "EAC": "$0M to $10M",
     "FY25 Forecasted Spend": "$0.00",
     "FY25 Actual Spend": "$0",
     "FY26 Project Funding": "$0",
@@ -1277,7 +1519,7 @@ b;
     "Name": "MD AIDS Drug Assistance Program (MADAP)",
     "Agency": "Maryland Department of Health",
     "Phase": "Procurement",
-    "Project Length": "5 - 7 years",
+    "Project Length": "5 to 7 years",
     "Project Len Min": 5,
     "Project Length Max": 7,
     "Start Year": 2023,
@@ -1289,7 +1531,7 @@ b;
     "Implementation End - Current": "3/31/2028",
     "O&M Start - Current": "4/1/2028",
     "O&M End - Current": "6/30/2029",
-    "EAC": "$10M - $20M",
+    "EAC": "$10M to $20M",
     "FY25 Forecasted Spend": "$32,483.79",
     "FY25 Actual Spend": "$53,042",
     "FY26 Project Funding": "$2,279,563",
@@ -1301,7 +1543,7 @@ b;
     "Name": "MMT - Non Emergency Medical Transportation (NEMT)",
     "Agency": "Maryland Department of Health",
     "Phase": "Procurement",
-    "Project Length": "10 - 12 years",
+    "Project Length": "10 to 12 years",
     "Project Len Min": 10,
     "Project Length Max": 12,
     "Start Year": 2018,
@@ -1313,7 +1555,7 @@ b;
     "Implementation End - Current": "6/30/2028",
     "O&M Start - Current": "7/1/2028",
     "O&M End - Current": "9/30/2029",
-    "EAC": "$20M - $30M",
+    "EAC": "$20M to $30M",
     "FY25 Forecasted Spend": "$2,179,130.52",
     "FY25 Actual Spend": "$1,952,531",
     "FY26 Project Funding": "$5,033,453",
@@ -1325,7 +1567,7 @@ b;
     "Name": "Enterprise Solutions Planning Initiative (ESPI)",
     "Agency": "Department of Information Technology",
     "Phase": "Implementation",
-    "Project Length": "12 - 14 years",
+    "Project Length": "12 to 14 years",
     "Project Len Min": 12,
     "Project Length Max": 14,
     "Start Year": 2017,
@@ -1337,7 +1579,7 @@ b;
     "Implementation End - Current": "7/1/2029",
     "O&M Start - Current": "7/2/2029",
     "O&M End - Current": "10/1/2030",
-    "EAC": "$10M - $20M",
+    "EAC": "$10M to $20M",
     "FY25 Forecasted Spend": "$2,154,905.70",
     "FY25 Actual Spend": "$737,774",
     "FY26 Project Funding": "$1,651,200",
@@ -1349,7 +1591,7 @@ b;
     "Name": "Maryland Enterprise Web Strategy",
     "Agency": "Department of Information Technology",
     "Phase": "Implementation",
-    "Project Length": "5 - 7 years",
+    "Project Length": "5 to 7 years",
     "Project Len Min": 5,
     "Project Length Max": 7,
     "Start Year": 2024,
@@ -1361,7 +1603,7 @@ b;
     "Implementation End - Current": "6/30/2028",
     "O&M Start - Current": "7/1/2028",
     "O&M End - Current": "6/30/2029",
-    "EAC": "$20M - $30M",
+    "EAC": "$20M to $30M",
     "FY25 Forecasted Spend": "$477,086.84",
     "FY25 Actual Spend": "$0",
     "FY26 Project Funding": "$0",
@@ -1373,7 +1615,7 @@ b;
     "Name": "MDA Digitization and Modernization Project",
     "Agency": "Department of Agriculture",
     "Phase": "Implementation",
-    "Project Length": "5 - 7 years",
+    "Project Length": "5 to 7 years",
     "Project Len Min": 5,
     "Project Length Max": 7,
     "Start Year": 2024,
@@ -1385,7 +1627,7 @@ b;
     "Implementation End - Current": "6/30/2029",
     "O&M Start - Current": "7/1/2029",
     "O&M End - Current": "8/30/2030",
-    "EAC": "$60M - $70M",
+    "EAC": "$60M to $70M",
     "FY25 Forecasted Spend": "$161,105.50",
     "FY25 Actual Spend": "$161,106",
     "FY26 Project Funding": "$1,183,400",
@@ -1397,7 +1639,7 @@ b;
     "Name": "MMT - Provider Management Module",
     "Agency": "Maryland Department of Health",
     "Phase": "Implementation",
-    "Project Length": "11 - 13 years",
+    "Project Length": "11 to 13 years",
     "Project Len Min": 11,
     "Project Length Max": 13,
     "Start Year": 2018,
@@ -1409,7 +1651,7 @@ b;
     "Implementation End - Current": "10/6/2028",
     "O&M Start - Current": "10/7/2028",
     "O&M End - Current": "1/4/2030",
-    "EAC": "$150M - $175M",
+    "EAC": "$150M to $175M",
     "FY25 Forecasted Spend": "$26,472,006.54",
     "FY25 Actual Spend": "$22,196,881",
     "FY26 Project Funding": "$41,697,341",
@@ -1421,7 +1663,7 @@ b;
     "Name": "MDH Non-Medicaid Case Management (CMM) Modernization",
     "Agency": "Maryland Department of Health",
     "Phase": "Procurement",
-    "Project Length": "5 - 7 years",
+    "Project Length": "5 to 7 years",
     "Project Len Min": 5,
     "Project Length Max": 7,
     "Start Year": 2024,
@@ -1433,7 +1675,7 @@ b;
     "Implementation End - Current": "12/31/2028",
     "O&M Start - Current": "1/1/2029",
     "O&M End - Current": "6/29/2029",
-    "EAC": "$10M - $20M",
+    "EAC": "$10M to $20M",
     "FY25 Forecasted Spend": "$20,000.00",
     "FY25 Actual Spend": "$0",
     "FY26 Project Funding": "$0",
@@ -1445,7 +1687,7 @@ b;
     "Name": "2026 New Voting System",
     "Agency": "Maryland State Board of Elections",
     "Phase": "Procurement",
-    "Project Length": "7 - 9 years",
+    "Project Length": "7 to 9 years",
     "Project Len Min": 7,
     "Project Length Max": 9,
     "Start Year": 2022,
@@ -1457,7 +1699,7 @@ b;
     "Implementation End - Current": "12/31/2028",
     "O&M Start - Current": "1/1/2029",
     "O&M End - Current": "12/31/2029",
-    "EAC": "$100M - $125M",
+    "EAC": "$100M to $125M",
     "FY25 Forecasted Spend": "$637,998.60",
     "FY25 Actual Spend": "$813,102",
     "FY26 Project Funding": "$0",
@@ -1469,7 +1711,7 @@ b;
     "Name": "Electronic Patient Health Record (EPHR) Replacement",
     "Agency": "Department of Public Safety and Correctional Services",
     "Phase": "Implementation",
-    "Project Length": "12 - 14 years",
+    "Project Length": "12 to 14 years",
     "Project Len Min": 12,
     "Project Length Max": 14,
     "Start Year": 2017,
@@ -1481,7 +1723,7 @@ b;
     "Implementation End - Current": "1/1/2029",
     "O&M Start - Current": "1/2/2029",
     "O&M End - Current": "4/1/2030",
-    "EAC": "$20M - $30M",
+    "EAC": "$20M to $30M",
     "FY25 Forecasted Spend": "$472,154.88",
     "FY25 Actual Spend": "$472,155",
     "FY26 Project Funding": "$0",
@@ -1493,7 +1735,7 @@ b;
     "Name": "MMT - CMS Interoperability Rule",
     "Agency": "Maryland Department of Health",
     "Phase": "Implementation",
-    "Project Length": "5 - 7 years",
+    "Project Length": "5 to 7 years",
     "Project Len Min": 5,
     "Project Length Max": 7,
     "Start Year": 2024,
@@ -1505,7 +1747,7 @@ b;
     "Implementation End - Current": "12/10/2029",
     "O&M Start - Current": "12/11/2029",
     "O&M End - Current": "3/31/2031",
-    "EAC": "$20M - $30M",
+    "EAC": "$20M to $30M",
     "FY25 Forecasted Spend": "$3,293,484.76",
     "FY25 Actual Spend": "$2,655,633",
     "FY26 Project Funding": "$8,602,756",
@@ -1517,7 +1759,7 @@ b;
     "Name": "Statewide Pollbook Modernization (SPM)",
     "Agency": "Maryland State Board of Elections",
     "Phase": "Implementation",
-    "Project Length": "5 - 7 years",
+    "Project Length": "5 to 7 years",
     "Project Len Min": 5,
     "Project Length Max": 7,
     "Start Year": 2024,
@@ -1529,7 +1771,7 @@ b;
     "Implementation End - Current": "12/31/2028",
     "O&M Start - Current": "1/1/2029",
     "O&M End - Current": "6/1/2029",
-    "EAC": "$30M - $40M",
+    "EAC": "$30M to $40M",
     "FY25 Forecasted Spend": "$365,338.76",
     "FY25 Actual Spend": "$305,043",
     "FY26 Project Funding": "$3,102,916",
@@ -1541,7 +1783,7 @@ b;
     "Name": "AS400 Replacement",
     "Agency": "Department of General Services",
     "Phase": "Procurement",
-    "Project Length": "6 - 8 years",
+    "Project Length": "6 to 8 years",
     "Project Len Min": 6,
     "Project Length Max": 8,
     "Start Year": 2023,
@@ -1553,7 +1795,7 @@ b;
     "Implementation End - Current": "6/30/2028",
     "O&M Start - Current": "7/1/2028",
     "O&M End - Current": "6/30/2029",
-    "EAC": "$0M - $10M",
+    "EAC": "$0M to $10M",
     "FY25 Forecasted Spend": "$272,095.41",
     "FY25 Actual Spend": "$245,635",
     "FY26 Project Funding": "$0",
@@ -1565,7 +1807,7 @@ b;
     "Name": "Juvenile Case Management Modernization",
     "Agency": "Department of Juvenile Services",
     "Phase": "Planning",
-    "Project Length": "5 - 7 years",
+    "Project Length": "5 to 7 years",
     "Project Len Min": 5,
     "Project Length Max": 7,
     "Start Year": 2025,
@@ -1577,7 +1819,7 @@ b;
     "Implementation End - Current": "6/30/2028",
     "O&M Start - Current": "7/1/2028",
     "O&M End - Current": "6/30/2029",
-    "EAC": "$10M - $20M",
+    "EAC": "$10M to $20M",
     "FY25 Forecasted Spend": "$0.00",
     "FY25 Actual Spend": "$0",
     "FY26 Project Funding": "$0",
@@ -1589,7 +1831,7 @@ b;
     "Name": "Financial Management Information System (FMIS)",
     "Agency": "Comptroller of Maryland",
     "Phase": "Planning",
-    "Project Length": "9 - 11 years",
+    "Project Length": "9 to 11 years",
     "Project Len Min": 9,
     "Project Length Max": 11,
     "Start Year": 2021,
@@ -1601,7 +1843,7 @@ b;
     "Implementation End - Current": "6/30/2029",
     "O&M Start - Current": "7/1/2029",
     "O&M End - Current": "9/30/2030",
-    "EAC": "$325M - $350M",
+    "EAC": "$325M to $350M",
     "FY25 Forecasted Spend": "$13,599,547.85",
     "FY25 Actual Spend": "$9,614,459",
     "FY26 Project Funding": "$32,400,000",
@@ -1613,7 +1855,7 @@ b;
     "Name": "Maryland Assessment Administration and Valuation System (MAAVS) Modernization",
     "Agency": "Department of Assessments and Taxation",
     "Phase": "Planning",
-    "Project Length": "5 - 7 years",
+    "Project Length": "5 to 7 years",
     "Project Len Min": 5,
     "Project Length Max": 7,
     "Start Year": 2025,
@@ -1625,7 +1867,7 @@ b;
     "Implementation End - Current": "6/30/2029",
     "O&M Start - Current": "7/1/2029",
     "O&M End - Current": "6/30/2030",
-    "EAC": "$10M - $20M",
+    "EAC": "$10M to $20M",
     "FY25 Forecasted Spend": "$1,950,000.00",
     "FY25 Actual Spend": "$0",
     "FY26 Project Funding": "$4,900,000",
@@ -1637,7 +1879,7 @@ b;
     "Name": "Voter Registration Election Administration Management System",
     "Agency": "Maryland State Board of Elections",
     "Phase": "Procurement",
-    "Project Length": "5 - 7 years",
+    "Project Length": "5 to 7 years",
     "Project Len Min": 5,
     "Project Length Max": 7,
     "Start Year": 2025,
@@ -1649,7 +1891,7 @@ b;
     "Implementation End - Current": "12/31/2030",
     "O&M Start - Current": "1/1/2031",
     "O&M End - Current": "12/31/2031",
-    "EAC": "$30M - $40M",
+    "EAC": "$30M to $40M",
     "FY25 Forecasted Spend": "$0.00",
     "FY25 Actual Spend": "$0",
     "FY26 Project Funding": "$0",
@@ -1661,7 +1903,7 @@ b;
     "Name": "Computerized Records Information System",
     "Agency": "Department of Assessments and Taxation",
     "Phase": "Implementation",
-    "Project Length": "12 - 14 years",
+    "Project Length": "12 to 14 years",
     "Project Len Min": 12,
     "Project Length Max": 14,
     "Start Year": 2019,
@@ -1673,7 +1915,7 @@ b;
     "Implementation End - Current": "6/30/2029",
     "O&M Start - Current": "7/1/2029",
     "O&M End - Current": "6/30/2030",
-    "EAC": "$30M - $40M",
+    "EAC": "$30M to $40M",
     "FY25 Forecasted Spend": "$6,708,882.30",
     "FY25 Actual Spend": "$3,236,248",
     "FY26 Project Funding": "$9,035,696",
@@ -1685,7 +1927,7 @@ b;
     "Name": "Computerized Criminal History (CCH) Replacement (Phase II)",
     "Agency": "Department of Public Safety and Correctional Services",
     "Phase": "Implementation",
-    "Project Length": "15 - 17 years",
+    "Project Length": "15 to 17 years",
     "Project Len Min": 15,
     "Project Length Max": 17,
     "Start Year": 2016,
@@ -1697,7 +1939,7 @@ b;
     "Implementation End - Current": "2/28/2030",
     "O&M Start - Current": "3/1/2030",
     "O&M End - Current": "5/26/2031",
-    "EAC": "$20M - $30M",
+    "EAC": "$20M to $30M",
     "FY25 Forecasted Spend": "$1,055,112.66",
     "FY25 Actual Spend": "$283,113",
     "FY26 Project Funding": "$0",
@@ -1709,7 +1951,7 @@ b;
     "Name": "MMT - Decision Support & Enterprise Data Warehouse",
     "Agency": "Maryland Department of Health",
     "Phase": "Implementation",
-    "Project Length": "7 - 9 years",
+    "Project Length": "7 to 9 years",
     "Project Len Min": 7,
     "Project Length Max": 9,
     "Start Year": 2024,
@@ -1721,7 +1963,7 @@ b;
     "Implementation End - Current": "12/31/2029",
     "O&M Start - Current": "1/1/2030",
     "O&M End - Current": "3/31/2031",
-    "EAC": "$50M - $60M",
+    "EAC": "$50M to $60M",
     "FY25 Forecasted Spend": "$1,153,132.33",
     "FY25 Actual Spend": "$812,893",
     "FY26 Project Funding": "$16,699,356",
@@ -1733,7 +1975,7 @@ b;
     "Name": "Environment (MDE) ETS and LRCA System Consolidation and Modernization Project",
     "Agency": "Department of the Environment",
     "Phase": "Not started",
-    "Project Length": "7 - 9 years",
+    "Project Length": "7 to 9 years",
     "Project Len Min": 7,
     "Project Length Max": 9,
     "Start Year": 2026,
@@ -1745,7 +1987,7 @@ b;
     "Implementation End - Current": "4/2/2032",
     "O&M Start - Current": "4/5/2032",
     "O&M End - Current": "6/30/2033",
-    "EAC": "$0M - $10M",
+    "EAC": "$0M to $10M",
     "FY25 Forecasted Spend": "$0.00",
     "FY25 Actual Spend": "$0",
     "FY26 Project Funding": "$0",
@@ -1757,7 +1999,7 @@ b;
     "Name": "MMT - MES Claims Module",
     "Agency": "Maryland Department of Health",
     "Phase": "Planning",
-    "Project Length": "9 - 11 years",
+    "Project Length": "9 to 11 years",
     "Project Len Min": 9,
     "Project Length Max": 11,
     "Start Year": 2024,
@@ -1769,7 +2011,7 @@ b;
     "Implementation End - Current": "6/30/2032",
     "O&M Start - Current": "7/1/2032",
     "O&M End - Current": "9/30/2033",
-    "EAC": "$70M - $80M",
+    "EAC": "$70M to $80M",
     "FY25 Forecasted Spend": "$3,648,592.91",
     "FY25 Actual Spend": "$8,916,588",
     "FY26 Project Funding": "$3,020,949",
@@ -1781,7 +2023,7 @@ b;
     "Name": "MMT - Utilization Control Agent (UCA)",
     "Agency": "Maryland Department of Health",
     "Phase": "Closed",
-    "Project Length": "7 - 9 years",
+    "Project Length": "7 to 9 years",
     "Project Len Min": 7,
     "Project Length Max": 9,
     "Start Year": 2018,
@@ -1793,7 +2035,7 @@ b;
     "Implementation End - Current": "9/3/2024",
     "O&M Start - Current": "9/4/2024",
     "O&M End - Current": "12/1/2025",
-    "EAC": "$20M - $30M",
+    "EAC": "$20M to $30M",
     "FY25 Forecasted Spend": "$12,022,275.32",
     "FY25 Actual Spend": "$6,524,413",
     "FY26 Project Funding": "$4,171,512",
@@ -1805,7 +2047,7 @@ b;
     "Name": "MMT - Behavioral Health ASO (BHASO)",
     "Agency": "Maryland Department of Health",
     "Phase": "Closeout",
-    "Project Length": "7 - 9 years",
+    "Project Length": "7 to 9 years",
     "Project Len Min": 7,
     "Project Length Max": 9,
     "Start Year": 2018,
@@ -1817,7 +2059,7 @@ b;
     "Implementation End - Current": "1/1/2025",
     "O&M Start - Current": "1/2/2025",
     "O&M End - Current": "3/1/2026",
-    "EAC": "$50M - $60M",
+    "EAC": "$50M to $60M",
     "FY25 Forecasted Spend": "$20,310,784.41",
     "FY25 Actual Spend": "$16,863,015",
     "FY26 Project Funding": "$12,461,848",
@@ -1829,7 +2071,7 @@ b;
     "Name": "Maryland OneStop Portal",
     "Agency": "Department of Information Technology",
     "Phase": "O&M",
-    "Project Length": "8 - 10 years",
+    "Project Length": "8 to 10 years",
     "Project Len Min": 8,
     "Project Length Max": 10,
     "Start Year": 2017,
@@ -1841,7 +2083,7 @@ b;
     "Implementation End - Current": "6/30/2025",
     "O&M Start - Current": "7/1/2025",
     "O&M End - Current": "6/30/2026",
-    "EAC": "$30M - $40M",
+    "EAC": "$30M to $40M",
     "FY25 Forecasted Spend": "$632,913.00",
     "FY25 Actual Spend": "$632,913",
     "FY26 Project Funding": "$3,053,966",
@@ -1853,7 +2095,7 @@ b;
     "Name": "Automated Licensing and Registration Tracking System (ALRTS)",
     "Agency": "Department of State Police",
     "Phase": "O&M",
-    "Project Length": "14 - 16 years",
+    "Project Length": "14 to 16 years",
     "Project Len Min": 14,
     "Project Length Max": 16,
     "Start Year": 2012,
@@ -1865,7 +2107,7 @@ b;
     "Implementation End - Current": "5/1/2025",
     "O&M Start - Current": "5/2/2025",
     "O&M End - Current": "7/30/2026",
-    "EAC": "$10M - $20M",
+    "EAC": "$10M to $20M",
     "FY25 Forecasted Spend": "$844,260.40",
     "FY25 Actual Spend": "$892,513",
     "FY26 Project Funding": "$298,727",
@@ -1877,7 +2119,7 @@ b;
     "Name": "Integrated Electronic Vital Records Registration System",
     "Agency": "Maryland Department of Health",
     "Phase": "O&M",
-    "Project Length": "9 - 11 years",
+    "Project Length": "9 to 11 years",
     "Project Len Min": 9,
     "Project Length Max": 11,
     "Start Year": 2018,
@@ -1889,7 +2131,7 @@ b;
     "Implementation End - Current": "6/30/2025",
     "O&M Start - Current": "7/1/2025",
     "O&M End - Current": "9/30/2026",
-    "EAC": "$20M - $30M",
+    "EAC": "$20M to $30M",
     "FY25 Forecasted Spend": "$3,213,716.90",
     "FY25 Actual Spend": "$3,372,722",
     "FY26 Project Funding": "$0",
@@ -1901,7 +2143,7 @@ b;
     "Name": "Energy Efficiency Program Management System",
     "Agency": "Department of Housing and Community Development",
     "Phase": "O&M",
-    "Project Length": "6 - 8 years",
+    "Project Length": "6 to 8 years",
     "Project Len Min": 6,
     "Project Length Max": 8,
     "Start Year": 2020,
@@ -1913,7 +2155,7 @@ b;
     "Implementation End - Current": "9/30/2025",
     "O&M Start - Current": "10/1/2025",
     "O&M End - Current": "11/30/2026",
-    "EAC": "$0M - $10M",
+    "EAC": "$0M to $10M",
     "FY25 Forecasted Spend": "$608,980.00",
     "FY25 Actual Spend": "$3,836",
     "FY26 Project Funding": "$0",
@@ -1925,7 +2167,7 @@ b;
     "Name": "MMT - Hospice And Maryland Daycare Enrollment",
     "Agency": "Maryland Department of Health",
     "Phase": "O&M",
-    "Project Length": "3 - 5 years",
+    "Project Length": "3 to 5 years",
     "Project Len Min": 3,
     "Project Length Max": 5,
     "Start Year": 2023,
@@ -1937,7 +2179,7 @@ b;
     "Implementation End - Current": "9/26/2025",
     "O&M Start - Current": "9/27/2025",
     "O&M End - Current": "12/31/2026",
-    "EAC": "$10M - $20M",
+    "EAC": "$10M to $20M",
     "FY25 Forecasted Spend": "$19,023,284.74",
     "FY25 Actual Spend": "$4,035,455",
     "FY26 Project Funding": "$5,670,316",
@@ -1949,7 +2191,7 @@ b;
     "Name": "Maryland Department of Agriculture (MDA) Modernization Program",
     "Agency": "Department of Agriculture",
     "Phase": "O&M",
-    "Project Length": "8 - 10 years",
+    "Project Length": "8 to 10 years",
     "Project Len Min": 8,
     "Project Length Max": 10,
     "Start Year": 2017,
@@ -1961,7 +2203,7 @@ b;
     "Implementation End - Current": "10/31/2025",
     "O&M Start - Current": "11/3/2025",
     "O&M End - Current": "1/30/2027",
-    "EAC": "$0M - $10M",
+    "EAC": "$0M to $10M",
     "FY25 Forecasted Spend": "$1,407,821.22",
     "FY25 Actual Spend": "$1,369,285",
     "FY26 Project Funding": "$0",
@@ -2298,11 +2540,11 @@ b;
             el.onblur = () => tooltipEl.style.display = 'none';
         };
         
-        setBar('bar25F', v25F, p["FY25 Forecasted Spend"], "FY25 Forecasted Spend");
-        setBar('bar25A', v25A, p["FY25 Actual Spend"], "FY25 Actual Spend");
-        setBar('bar26Fund', v26Fund, p["FY26 Allocation"], "FY26 Allocation");
-        setBar('bar26F', v26F, p["FY26 Forecasted Spend"], "FY26 Forecasted Spend");
-        setBar('bar26A', v26A, "$0", "FY26 Actual Spend");
+        setBar('bar25F', v25F, p["Fiscal Year 2025 Forecasted Spend"], "Fiscal Year 2025 Forecasted Spend");
+        setBar('bar25A', v25A, p["Fiscal Year 2025 Actual Spend"], "Fiscal Year 2025 Actual Spend");
+        setBar('bar26Fund', v26Fund, p["Fiscal Year 2026 Appropriation"], "Fiscal Year 2026 Appropriation");
+        setBar('bar26F', v26F, p["Fiscal Year 2026 Forecasted Spend"], "Fiscal Year 2026 Forecasted Spend");
+        setBar('bar26A', v26A, "$0", "Fiscal Year 2026 Actual Spend");
     }
 </script>
 
